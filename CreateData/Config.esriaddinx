@@ -1,0 +1,16 @@
+﻿<ESRI.Configuration xmlns="http://schemas.esri.com/Desktop/AddIns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Name>CreateData</Name>
+  <AddInID>{81e0f8c5-5ba2-4c29-84dc-bcdbfefdb61e}</AddInID>
+  <Description>Creates Electric Lines, Services, Customers, and Usage for GIS in Action Conference</Description>
+  <Version>1.0</Version>
+  <Image>Images\CreateData.png</Image>
+  <Author>rtaig</Author>
+  <Company></Company>
+  <Date>2/17/2018</Date>
+  <Targets>
+    <Target name="Desktop" version="10.5" />
+  </Targets>
+  <AddIn language="CLR" library="CreateData.dll" namespace="CreateData">
+    <ArcMap />
+  </AddIn>
+</ESRI.Configuration>

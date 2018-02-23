@@ -1,0 +1,6 @@
+*.bundlx
+*.bundl
+TPK/
+Software/
+Pluralsight/
+arcgis_js_api/
