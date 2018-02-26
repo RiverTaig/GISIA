@@ -1,44 +1,101 @@
 <!DOCTYPE html>
 <html>
 
-  <head>
-        <title>GIS in Action</title>
-        <script src="sw.js"></script>
-        <link rel="stylesheet" type="text/css" href="css/main.css">
-        <link rel="stylesheet" type="text/css" href="css/normalize.css">
-        <link rel="stylesheet" type="text/css" href="css/vendor/jquery-ui.min.css">      
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300" type="text/css" />    
+<head>
+    <title>GIS in Action</title>
+    <script src="sw.js"></script>
+    <script>var exports = {};</script>
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link rel="stylesheet" type="text/css" href="css/normalize.css">
+    <link rel="stylesheet" type="text/css" href="css/vendor/jquery-ui.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300" type="text/css" />
+    <style>
+        html,
+        body,
+        #viewDiv {
+            padding: 0;
+            margin: 0;
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+    <link rel="stylesheet" href="https://js.arcgis.com/4.6/esri/css/main.css">
+    <script>
+        var locationPath = location.pathname.replace(/\/[^\/]+$/, "");
+        window.dojoConfig = {
+            packages: [
+                {
+                    name: "js",
+                    location: locationPath + "js"
+                }
+            ]
+        };
+    </script>
+</head>
 
-  </head>
+<body>
+    <div id="divMain">
+        <div class="topnav" id="myTopnav">
+            <a content="Map" content="Map" class="active">Map</a>
+            <a content="Basemap">Basemap</a>
+            <a content="Data">Data</a>
+            <a content="Bookmarks">Bookmarks</a>
+            <a content="Labels">Labels</a>
+            <a content="Tracing">Tracing</a>
+            <a content="Camera">Camera</a>
+            <a content="Synch">Synch</a>
+            <a content="blank">Map</a>
+            <a content="About">About</a>
+            <!-- <a content="Map" content="Map" class="active" display="none" >Back to Map</a> -->
+            <!-- <a content="HelloWorld">Hello World!</a> -->
+            <a href="javascript:void(0);" style="font-size:15px;" class="icon" onclick="displayMenu()">&#9776;</a>
+        </div>
 
-  <body>
-<div class="topnav" id="myTopnav">
-  <a href="#home" class="active">Home</a>
-  <a href="Index2.html">Camera</a>
-  <a href="#contact">Contact</a>
-  <a href="#about">About</a>
-  <a href="javascript:void(0);" style="font-size:15px;" class="icon" onclick="myFunction()">&#9776;</a>
-</div>
 
-<div style="padding-left:16px">
-  <h2>Responsive Topnav Example</h2>
-  <span id="onlineStatusMessage"></span>
-  <p>Resize the browser window to see how it works.</p>
-</div>
+        <div id="divMainContent">
+            <div id="Map" class="">
+                <h2>River map please choose your basemap and data from the menu to view a map.</h2>
+            </div>
+            <div id="Basemap" class="hideContent">
+            </div>
+            <div id="Data" class="hideContent">
+                <button id="saveBookmarkToDB">Save Bookmark</button>
+            </div>
+            <div id="Bookmarks" class="hideContent">
+            </div>
+            <div id="Labels" class="hideContent">
+            </div>
+            <div id="Tracing" class="hideContent">
+            </div>
+            <div id="Camera" class="hideContent">
+            </div>
+            <div id="Synch" class="hideContent">
+            </div>
+            <div id="About" class="hideContent">
+            </div>
+        </div>
+
+        <div style="padding-left:16px">
+            <span id="onlineStatusMessage"></span>
+        </div>
 
 
-<script src="js/onlinedetection.js"></script>
-<script>
-function myFunction() {
-    var x = document.getElementById("myTopnav");
-    if (x.className === "topnav") {
-        x.className += " responsive";
-    } else {
-        x.className = "topnav";
-    }
-}
-</script>
+    </div>
+    <div id="viewDiv"></div>
+    <script src="js/helloworld.js"></script>
+    <script src="js/vendor/jquery-3.3.1.min.js"></script>
+    <script src="js/vendor/bootstrap.min.js"></script>
+    <script src="js/vendor/jquery-ui.min.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/createdatabase.js"></script>
+    <script src="js/onlinedetection.js"></script>
 
-  </body>
+
+    <script src="https://js.arcgis.com/4.6"></script>
+    <!-- <script src="js/BasemapModel.js"></script>
+    <script src="js/BasemapViewModel.js"></script>     -->
+
+    <script>require(["js/map"]);</script>
+</body>
 
 </html>

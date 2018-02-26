@@ -4,18 +4,43 @@ body {
     font-family: Open Sans, Verdana,Arial, Helvetica, sans-serif;
     font-weight: bold;
   }
-  
+  #onlineStatusMessage{
+    background: #aaaaaa;
+    font-weight: bold;
+    padding: 5px;
+    opacity: .5;
+    position: fixed;
+    bottom: 5px;
+ 
+    right: 5px;   
+  }
+  .lime{
+      color:blue;
+      font-weight: bold;
+  }
+  .red{
+      color:red;
+      font-weight: bold;
+  }
+  .hideContent{
+      display:none;
+  }
   .topnav {
     overflow: hidden;
     background-image: linear-gradient(to right, rgb(50, 100, 150), rgb(180, 180, 255) 50%, rgb(50, 100, 150));
     font-family: "Verdana", sans-serif;
     
   }
-  
+  /* .topnav.disconnect {
+    overflow: hidden;
+    background-image: linear-gradient(to right, rgb(255, 100, 100), rgb(255, 100, 200) 50%, rgb(255, 100, 100));
+    font-family: "Verdana", sans-serif;
+    
+  } */
   .topnav a {
     float: left;
     display: block;
-    color: rgb(23,23,23);
+    color: white;
     font-weight:bold;
     text-align: center;
     padding: 14px 16px;
@@ -27,20 +52,22 @@ body {
   
   .topnav a:hover {
     background-color: rgb(255,255,200);
-    text-decoration: underline;
+    color:black;
+
   }
   .topnav a.active:hover {
-    background-color: #cccccc;
+    /* background-color: #cccccc; */
      text-decoration: none;
   }
   .active {
       /*background: linear-gradient(90deg, #777777, #dddddd, #dddddd, #777777);*/
-      background-color: #cccccc;
-       text-decoration: none;
+      color: orange;
+      background-color: transparent;
     
   }
   a.active{
-    color:black;
+    color:orange;
+    background-color: #00000033;
     font-size:17px;
     text-transform: uppercase;
   }
@@ -55,6 +82,12 @@ body {
       float: right;
       display: block;
     }
+    a.active{
+        color:orange;
+        background-color: #00000000;
+        font-size:17px;
+        text-transform: uppercase;
+      }    
   }
   
   @media screen and (max-width: 600px) {
@@ -69,4 +102,7 @@ body {
       display: block;
       text-align: left;
     }
+  }
+  #divMainContent{
+      margin: 1%;
   }

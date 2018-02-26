@@ -9,17 +9,19 @@ window.addEventListener('load', function(e) {
 
 window.addEventListener('online', function(e){
     updateOnlineStatus(true);
+    $(".topnav").removeClass("disconnect");
 });
 
 window.addEventListener('offline', function(e) {
     updateOnlineStatus(false);
+    $(".topnav").addClass("disconnect");
 });
 function updateOnlineStatus(online){
     var osm = document.getElementById('onlineStatusMessage');
     if(online){
-        osm.innerHTML = "<span class='lime'>*</span>";
+        osm.innerHTML = "<span class='lime'>ONLINE</span>";
     }
     else{
-        osm.innerHTML = "<span class='red'>X</span>";
+        osm.innerHTML = "<span class='red'>OFFLINE</span>";
     }
 }

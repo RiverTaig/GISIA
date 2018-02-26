@@ -1,4 +1,4 @@
-var CACHE_NAME = "GISIA-cache-v1.43";
+var CACHE_NAME = "GISIA-cache-v1.65";
 var urlsToCache = [
     "/GISIA/index.html",
     "/GISIA/index2.html",
@@ -21,7 +21,19 @@ var urlsToCache = [
     "/GISIA/arcgis_js_api/library/3.14/3.14/dojo/NodeList-traverse.js",
     "/GISIA/css/images/map/logo-med.png",
     "/GISIA/css/dijit/images/ajax-loader.gif",    
-    "/GISIA/js/vendor/bootstrap.min.js"
+    "/GISIA/js/vendor/bootstrap.min.js",
+    "/GISIA/js/helloworld.js",
+    "/GISIA/js/basemap.js",
+    "/GISIA/html/about.html",
+    "/GISIA/html/basemap.html",
+    "/GISIA/html/bookmarks.html",
+    "/GISIA/html/camera.html",
+    "/GISIA/html/data.html",
+    "/GISIA/html/helloworld.html",
+    "/GISIA/html/home.html",
+    "/GISIA/html/tracing.html",    
+    "/GISIA/html/map.html",    
+    "/GISIA/html/synch.html"
 ];
 
 if ('serviceWorker' in navigator)

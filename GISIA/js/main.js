@@ -1,72 +1,74 @@
 
 
+
+
 // Grab elements, create settings, etc.
-var video = document.getElementById('video');
-
+//var video = document.getElementById('video');
+//test
 // Get access to the camera!
-if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-    // Not adding `{ audio: true }` since we only want video now
-    navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
-        video.src = window.URL.createObjectURL(stream);
-        video.play();
-    });
-}
+//if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+// Not adding `{ audio: true }` since we only want video now
+//    navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
+//       video.src = window.URL.createObjectURL(stream);
+//      video.play();
+// });
+//}
 
-function btnSavePicture_Click(){
+function btnSavePicture_Click() {
     console.log("btnSavePicture_Click 1 ");
-    getImageDatabase(function(db){
+    getImageDatabase(function (db) {
         console.log("btnSavePicture_Click 2");
-        saveBlob(db); 
+        saveBlob(db);
     });
 
-        
+
 }
 
-function getImageDatabase(onSuccessFunction){
+function getImageDatabase(onSuccessFunction) {
     console.log("getImageDatabase");
-    var indexedDB = window.indexedDB || window.webkitIndexDB || window.mozIndexedDB ;
+    var indexedDB = window.indexedDB || window.webkitIndexDB || window.mozIndexedDB;
     var idbTransaction = window.IDBTransaction || window.webkitIDBTransaction;
-    var dbVersion =1;
+    var dbVersion = 1;
     var db;
     var request = indexedDB.open("gisiaImages", dbVersion);
-    var createObjectStore = function (database){
+    var createObjectStore = function (database) {
         console.log("Creating GISIA Images object store");
         database.createObjectStore("pictures");
     };
 
-    request.onupgradeneeded = function(event){
+    request.onupgradeneeded = function (event) {
         createObjectStore(event.target.result);
     };
-    request.onerror = function(event){
+    request.onerror = function (event) {
         console.log("Error creating / accessing IndexedDB database");
     };
-    
-    request.onsuccess = function(event) {
+
+    request.onsuccess = function (event) {
         console.log("Success creating  accessing IndexedDB database");
         db = request.result;
-        db.onerror = function(event){
-            console.log ("Error creating / accessing objectstore");
+        db.onerror = function (event) {
+            console.log("Error creating / accessing objectstore");
         };
         onSuccessFunction(db);
     };
 }
 
-function saveBlob(db ){
-        console.log("saveBlob 1");
+function saveBlob(db) {
+    console.log("saveBlob 1");
 
-        var canvas = document.getElementById("canvas");
-        //Get data from canvas
-        var img_b64 = canvas.toDataURL('image/png');
-        //Create blob from DataURL
-        var blob = dataURItoBlob(img_b64);
-        //img = document.createElement("img");
-        //img.src = URL.createObjectURL(blob);
+    var canvas = document.getElementById("canvas");
+    //Get data from canvas
+    var img_b64 = canvas.toDataURL('image/png');
+    //Create blob from DataURL
+    var blob = dataURItoBlob(img_b64);
+    //img = document.createElement("img");
+    //img.src = URL.createObjectURL(blob);
 
 
 
-        var transaction = db.transaction(["pictures"], "readwrite");
-        var put = transaction.objectStore("pictures").put(blob, createGuid());
-        console.log("saveBlob 2");
+    var transaction = db.transaction(["pictures"], "readwrite");
+    var put = transaction.objectStore("pictures").put(blob, createGuid());
+    console.log("saveBlob 2");
 }
 
 function dataURItoBlob(dataURI) {
@@ -86,7 +88,7 @@ function dataURItoBlob(dataURI) {
         ia[i] = byteString.charCodeAt(i);
     }
 
-    return new Blob([ia], {type:mimeString});
+    return new Blob([ia], { type: mimeString });
 }
 
 function createGuid() {
@@ -95,22 +97,22 @@ function createGuid() {
         return v.toString(16);
     });
 }
-function btnMedia_Click(){
-    
+function btnMedia_Click() {
+
     document.getElementById("divPictureArea").style.display = "inherit";
 }
-function btnDisplayImage_Click(){
+function btnDisplayImage_Click() {
     console.log("btnDisplayImage_Click 1 ");
-    getImageDatabase(function(db){
+    getImageDatabase(function (db) {
         console.log("btnDisplayImage_Click 2");
         var transaction = db.transaction(["pictures"], "readonly");
         var objectStore = transaction.objectStore("pictures");
         //debugger;
         var getFirstImageKeyRequest = objectStore.getAllKeys();
-        getFirstImageKeyRequest.onsuccess = function (res){
+        getFirstImageKeyRequest.onsuccess = function (res) {
             var firstImageKey = res.target.result[0]; // First file in db
             var objectStoreRequest = objectStore.get(firstImageKey);
-            objectStoreRequest.onsuccess = function (event){
+            objectStoreRequest.onsuccess = function (event) {
                 var imgFile = objectStoreRequest.result;
                 var imgURL = window.URL.createObjectURL(imgFile);
                 var imgPicture = document.getElementById("thumb");
@@ -120,28 +122,85 @@ function btnDisplayImage_Click(){
 
     });
 
-        
+
 }
 
-function btnSnapPhoto_Click(){
+function btnSnapPhoto_Click() {
     var canvas = document.getElementById('canvas');
     var context = canvas.getContext('2d');
     var video = document.getElementById('video');
 
     context.drawImage(video, 0, 0, 640, 480);
-    
+
 }
 var opt = {
-    autoOpen: false, 
-    modal: true, 
+    autoOpen: false,
+    modal: true,
     show: {
-        effect: 'fade', 
+        effect: 'fade',
         duration: 800
     }
 };
 
-$('.thumb').on("click", function(event){
+$('.thumb').on("click", function (event) {
     console.log("thumb clicked");
     $('#largeImage').attr('src', this.src);
     $('#large-image-modal').dialog(opt).dialog('open');
 });
+
+
+function displayMenu() {
+    var x = document.getElementById("myTopnav");
+    if (x.className === "topnav") {
+        x.className += " responsive";
+    } else {
+        x.className = "topnav";
+    }
+}
+
+
+var _basemapViewModel;
+
+$(document).ready(function () {
+    $("#myTopnav a").click(function () {
+        try {
+            $('#viewDiv').hide();
+            $('#divMainContent > div').addClass("hideContent");
+            if ($(this)[0].attributes["content"] !== undefined) {
+                var contentClass = $(this)[0].attributes["content"].value;
+                var contentClassSelector = "#" + $(this)[0].attributes["content"].value;
+                $(contentClassSelector).removeClass("hideContent");
+                $(contentClassSelector).load("html/" + contentClass + ".html");
+                //if responsive, then hide anchor tags
+                if ($(this).parent().hasClass("responsive")) {
+                    $(this).parent().removeClass("responsive");
+                    var userSelection = $(this).text();
+                    $(".active").html(userSelection);
+                    switch (userSelection) {
+                        case "Basemap":
+                            //_basemapViewModel = new BasemapViewModel();
+                            require(["js/BasemapModel","js/BasemapViewModel"], function(bm,vmv) {
+                                var m = new BasemapModel();
+                                  var xx = new BasemapViewModel(m);
+                            });
+                            break;
+                        case "Data":
+                            //var esriTest = new BasemapViewModel();
+                            break;
+                    }
+                }
+                else {
+                    $('div > a.active').removeClass("active");
+                    $(this).addClass("active");
+                }
+            }            
+        } catch (error) {
+            
+        }
+        finally{
+            //$('#viewDiv').show();
+        }
+
+
+    });
+});   
