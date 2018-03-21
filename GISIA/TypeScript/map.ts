@@ -1,4 +1,4 @@
-import EsriMap = require("esri/Map");
+/*import EsriMap = require("esri/Map");
 import MapView = require("esri/views/MapView");
 
 const map = new EsriMap({
@@ -10,4 +10,4 @@ const view = new MapView({
   container: "viewDiv",
   center: [-118.244, 34.053],
   zoom: 12
-});
+});*/

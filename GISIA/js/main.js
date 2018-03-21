@@ -162,43 +162,79 @@ function displayMenu() {
 var _basemapViewModel;
 
 $(document).ready(function () {
+    var navigateTo = function (whereTo){
+        //alert("Navigating to: " + whereTo);
+        //debugger;
+        $("#" + whereTo).load("html/" + whereTo + ".html", function(response, status, xhr){
+            
+
+            //$(".active").html(userSelection);
+            switch (whereTo) {
+                case "Basemap":
+                    var bm = require("js/BasemapModel");
+                    var bmi = new bm.BasemapModel.BasemapModel();
+                    var vm = require("js/BasemapViewModel");
+                    var vmi = new vm.BasemapViewModel(bmi);
+                    vmi.initializeView(response,$);
+                    //_basemapViewModel = new BasemapViewModel();
+                    // require(["js/BasemapModel","js/BasemapViewModel"], function(bm,vmv) {
+                    //     var m =  new bm.default();
+                    //       var xx = new  vmv.default();
+                    // });
+                    break;
+                case "Data":
+                    //var esriTest = new BasemapViewModel();
+                    break;
+            }
+
+
+        });        
+    }
+    navigateTo("Map");
+
     $("#myTopnav a").click(function () {
+        var contentClass = ""; 
         try {
-            $('#viewDiv').hide();
+            /*$('#viewDiv').hide();*/
+            //alert("cl");
+            
             $('#divMainContent > div').addClass("hideContent");
             if ($(this)[0].attributes["content"] !== undefined) {
-                var contentClass = $(this)[0].attributes["content"].value;
+                contentClass = $(this)[0].attributes["content"].value;
                 var contentClassSelector = "#" + $(this)[0].attributes["content"].value;
                 $(contentClassSelector).removeClass("hideContent");
-                $(contentClassSelector).load("html/" + contentClass + ".html");
-                //if responsive, then hide anchor tags
-                if ($(this).parent().hasClass("responsive")) {
-                    $(this).parent().removeClass("responsive");
-                    var userSelection = $(this).text();
-                    $(".active").html(userSelection);
-                    switch (userSelection) {
-                        case "Basemap":
-                            //_basemapViewModel = new BasemapViewModel();
-                            require(["js/BasemapModel","js/BasemapViewModel"], function(bm,vmv) {
-                                var m = new BasemapModel();
-                                  var xx = new BasemapViewModel(m);
-                            });
-                            break;
-                        case "Data":
-                            //var esriTest = new BasemapViewModel();
-                            break;
-                    }
+                var userSelection = $(this).text();
+                console.log("NAVIGATING TO " + userSelection);
+                if(userSelection==="Map"){
+                    return;
                 }
-                else {
-                    $('div > a.active').removeClass("active");
-                    $(this).addClass("active");
+                else{
+                    navigateTo(userSelection);
+                    
                 }
             }            
         } catch (error) {
-            
+            console.log(error);
         }
         finally{
-            //$('#viewDiv').show();
+            if($(this).hasClass("icon") == false){
+                $('div > a.active').removeClass("active");
+                $(this).addClass("active");
+                //if responsive, then hide anchor tags
+                if ($(this).parent().hasClass("responsive")) {
+                    $("#activeAnchor").text(contentClass);
+                    $(this).parent().removeClass("responsive");
+                }
+                
+            }
+            else{
+                $("#activeAnchor").text("");
+            }
+
+            // else {
+            //     $('div > a.active').removeClass("active");
+            //     $(this).addClass("active");
+            // }    
         }
 
 

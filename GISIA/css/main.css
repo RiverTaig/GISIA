@@ -11,8 +11,8 @@ body {
     opacity: .5;
     position: fixed;
     bottom: 5px;
+    left: 5px;
  
-    right: 5px;   
   }
   .lime{
       color:blue;
@@ -44,7 +44,7 @@ body {
     font-weight:bold;
     text-align: center;
     padding: 14px 16px;
-    text-decoration: none;
+    text-decoration: none !important;
     font-size: 17px;
     
     /*border-right: 2px solid black;*/
@@ -57,7 +57,7 @@ body {
   }
   .topnav a.active:hover {
     /* background-color: #cccccc; */
-     text-decoration: none;
+     text-decoration: none !important;;
   }
   .active {
       /*background: linear-gradient(90deg, #777777, #dddddd, #dddddd, #777777);*/
@@ -65,13 +65,24 @@ body {
       background-color: transparent;
     
   }
+  #activeAnchor{
+    text-transform: uppercase;
+    color:orange;
+  }
   a.active{
     color:orange;
     background-color: #00000033;
     font-size:17px;
     text-transform: uppercase;
   }
-  
+  .esriControlsBR {
+    position: absolute;
+    right: 20px !important;
+    bottom: 5px;
+    z-index: 30;
+    text-align: right;
+    font-size: x-small;
+  }
   .topnav .icon {
     display: none;
   }
@@ -104,5 +115,12 @@ body {
     }
   }
   #divMainContent{
-      margin: 1%;
+      /*margin: 1%;*/
+  }
+  .container-fluid{
+    padding:0px !important;
+
+  }
+  .col-lg-12{
+    padding:0px !important;
   }
