@@ -1,0 +1,12 @@
+{
+    "DebugOnCondition": {
+        "prefix": "river",
+        "scope": "javascript,typescript",
+        "body": [
+        "if( (window as any).DEBUG){"
+        "    debugger;"
+        "}"
+        ],
+        "description": "For Loop"
+    },
+}

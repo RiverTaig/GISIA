@@ -1,7 +1,4 @@
 
-
-
-
 // Grab elements, create settings, etc.
 //var video = document.getElementById('video');
 //test
@@ -13,6 +10,23 @@
 //      video.play();
 // });
 //}
+function ViewEvent(view, event)
+{
+    __MVVM_Views[view][event]();
+
+}
+
+function executeFunctionByName(functionName, context /*, args */) {
+    var args = Array.prototype.slice.call(arguments, 2);
+    var namespaces = functionName.split(".");
+    var func = namespaces.pop();
+    for(var i = 0; i < namespaces.length; i++) {
+      context = context[namespaces[i]];
+    }
+    return context[func].apply(context, args);
+  }
+
+
 
 function btnSavePicture_Click() {
     console.log("btnSavePicture_Click 1 ");
@@ -150,54 +164,66 @@ $('.thumb').on("click", function (event) {
 
 
 function displayMenu() {
-    var x = document.getElementById("myTopnav");
-    if (x.className === "topnav") {
-        x.className += " responsive";
+    var topNav = document.getElementById("myTopnav");
+    var dropDown = $("#gisia-menu");
+
+    if (dropDown.css("display") !== "none") {
+        topNav.className += " responsive";
     } else {
-        x.className = "topnav";
+        topNav.className = "topnav";
     }
 }
 
+var __MVVM_Views = {};// ["viewName" : view instance with DOM events which has a ref to the view model which has a ref to the model which can notify functions on viewModel when data changes]
 
-var _basemapViewModel;
 
 $(document).ready(function () {
-    var navigateTo = function (whereTo){
+    var navigateTo = function (whereTo) {
         //alert("Navigating to: " + whereTo);
         //debugger;
-        $("#" + whereTo).load("html/" + whereTo + ".html", function(response, status, xhr){
-            
+        $("#" + whereTo).load("html/" + whereTo + ".html", function (response, status, xhr) {
 
-            //$(".active").html(userSelection);
+
+            var model = null;
+            var view = null;
+            var viewModel = null;
+            var modelInstance = null;
+            var viewModelInstance = null;
+            var viewInstance = null;
             switch (whereTo) {
                 case "Basemap":
-                    var bm = require("js/BasemapModel");
-                    var bmi = new bm.BasemapModel.BasemapModel();
-                    var vm = require("js/BasemapViewModel");
-                    var vmi = new vm.BasemapViewModel(bmi);
-                    vmi.initializeView(response,$);
-                    //_basemapViewModel = new BasemapViewModel();
-                    // require(["js/BasemapModel","js/BasemapViewModel"], function(bm,vmv) {
-                    //     var m =  new bm.default();
-                    //       var xx = new  vmv.default();
-                    // });
+                    //Model
+                    require(["js/Basemap/BasemapModel","js/Basemap/BasemapViewModel","js/Basemap/BasemapView"], function (bmm,bmvm,bmv) {
+                        modelInstance= new bmm.BasemapModel();
+                        viewInstance= new bmv.BasemapView();
+                        viewModelInstance= new bmvm.BasemapViewModel(modelInstance, viewInstance, $);
+                        __MVVM_Views.BasemapView = viewInstance;
+                    } );
+
+      
+
                     break;
                 case "Data":
                     //var esriTest = new BasemapViewModel();
+                    require(["js/Data/DataModel","js/Data/DataViewModel","js/Data/DataView"], function (m,dvm,dv) {
+                        modelInstance= new m.DataModel();
+                        viewInstance= new dv.DataView();
+                        viewModelInstance= new dvm.DataViewModel(modelInstance, viewInstance, $);
+                        __MVVM_Views.DataView = viewInstance;
+                    } );                    
                     break;
             }
 
 
-        });        
+        });
     }
     navigateTo("Map");
 
+
+
     $("#myTopnav a").click(function () {
-        var contentClass = ""; 
+        var contentClass = "";
         try {
-            /*$('#viewDiv').hide();*/
-            //alert("cl");
-            
             $('#divMainContent > div').addClass("hideContent");
             if ($(this)[0].attributes["content"] !== undefined) {
                 contentClass = $(this)[0].attributes["content"].value;
@@ -205,36 +231,33 @@ $(document).ready(function () {
                 $(contentClassSelector).removeClass("hideContent");
                 var userSelection = $(this).text();
                 console.log("NAVIGATING TO " + userSelection);
-                if(userSelection==="Map"){
+                if (userSelection === "Map") {
                     return;
                 }
-                else{
+                else {
                     navigateTo(userSelection);
-                    
+
                 }
-            }            
+            }
         } catch (error) {
             console.log(error);
         }
-        finally{
-            if($(this).hasClass("icon") == false){
+        finally {
+            if ($(this).hasClass("icon") == false) {
                 $('div > a.active').removeClass("active");
                 $(this).addClass("active");
                 //if responsive, then hide anchor tags
+                //if ($(this).parent().style.display !== "none"){
+
                 if ($(this).parent().hasClass("responsive")) {
                     $("#activeAnchor").text(contentClass);
                     $(this).parent().removeClass("responsive");
                 }
-                
             }
-            else{
+            else {
                 $("#activeAnchor").text("");
             }
-
-            // else {
-            //     $('div > a.active').removeClass("active");
-            //     $(this).addClass("active");
-            // }    
+ 
         }
 
 

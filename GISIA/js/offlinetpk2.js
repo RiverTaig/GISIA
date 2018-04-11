@@ -38,7 +38,8 @@ define([
             }
 
             map = BootstrapMap.create("mapDiv", {});
-
+            window.gisia = {};
+            window.gisia.map = map;
             tpkLayer = new O.esri.TPK.TPKLayer();
             tpkLayer.on("progress", function (evt) {
                 console.log("TPK loading...");
@@ -78,7 +79,7 @@ define([
                 var xhrRequest = new XMLHttpRequest();
                 xhrRequest.open("GET", urlToTPK, true);
                 xhrRequest.responseType = "blob";
-                /*xhrRequest.onprogress = function (evt) {
+                xhrRequest.onprogress = function (evt) {
                     var percent = 0;
     
                     if ("total" in evt) {
@@ -87,9 +88,9 @@ define([
                     else {
                         percent = (parseFloat(evt.loaded / evt.totalSize) * 100).toFixed(0);
                     }
-                    urlInputBtn.innerHTML = "Get file via url " + percent + "%";
+                    console.log( "Get file via url " + percent + "%");
                     console.log("Begin downloading remote tpk file...")
-                }*/
+                }
 
                 xhrRequest.error = function (err) {
                     console.log("ERROR retrieving TPK file: " + err.toString());
@@ -106,8 +107,16 @@ define([
                         alert("There was a problem loading the file. " + this.status + ": " + this.statusText)
                     }
                 };
-
-                xhrRequest.send();
+                try{
+                    xhrRequest.send();
+                }
+                catch(e)
+                {
+                    if( DEBUG){
+                        debugger;
+                    }
+                }
+                
             },
 
             increment: function () {

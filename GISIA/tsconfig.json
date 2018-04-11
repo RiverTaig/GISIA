@@ -9,11 +9,16 @@
       "experimentalDecorators": true,
       "preserveConstEnums": true,
       "suppressImplicitAnyIndexErrors": true,
-      "outDir": "js"
+      "outDir": "./js"
 
     },
-    "include": [
-      "./TypeScript/*"
+    "types":["arcgis-js-api"],
+    "include":[
+      "./TypeScript/**/*.ts",
+      "./app/**/*.ts",
+      "../dojo/1.11/modules.d.ts",
+      "../GISIA/node_modules/dojo-typings/dijit/1.11/modules.d.ts",
+      "../GISIA/node_modules/dojo-typings/dojox/1.11/modules.d.ts"
     ],
     "exclude": [
       "node_modules"

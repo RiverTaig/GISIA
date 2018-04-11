@@ -3,7 +3,7 @@ define(function ( ) {
     return {
         
         helloWorld : function () {
-            console.log("Helloooo");
+            console.log("");
         }
     };
 });

@@ -1,13 +1,19 @@
-var CACHE_NAME = "GISIA-cache-v1.74";
+//"http://localhost/GISIA/tpk/bootstrap-map-js/src/css/bootstrapmap.css"
+//"http://localhost/GISIA/arcgis_js_api/library/3.14/3.14/dojo/resources/blank.gif"
+//"http://localhost/GISIA/arcgis_js_api/library/3.14/3.14/dojo/resources/blank.gif"
+var CACHE_NAME = "GISIA-cache-v1.193";
 var urlsToCache = [
+    "/GISIA/",
     "/GISIA/index.html",
     "/GISIA/tpk-layer.html",
     "/GISIA/sw.js",
+    "/GISIA/arcgis_js_api/library/3.14/3.14/dojo/resources/blank.gif",
+    "/GISIA/favicon.ico",
     "/GISIA/css/normalize.css",
     "/GISIA/css/main.css",
     "/GISIA/js/main.js",
     "/GISIA/js/createdatabase.js",
-    "/GISIA/js/offlinetpk.js",
+    "/GISIA/js/offlinetpk2.js",
     "/GISIA/js/onlinedetection.js",
     "/GISIA/js/vendor/jquery-3.3.1.min.js",
     "/GISIA/js/vendor/jquery-ui.min.js",
@@ -22,10 +28,11 @@ var urlsToCache = [
     "/GISIA/arcgis_js_api/library/3.14/3.14/dojo/on.js",
     "/GISIA/arcgis_js_api/library/3.14/3.14/esri/symbols/simplefillsymbol.js",
     "/GISIA/arcgis_js_api/library/3.14/3.14/esri/graphic.js",
-    "/GISIA/arcgis_js_api/library/3.14/3.14/esri/layers/graphicslayer/graphiclayer.js",
+    "/GISIA/arcgis_js_api/library/3.14/3.14/esri/layers/graphicslayer.js",
     "/GISIA/arcgis_js_api/library/3.14/3.14/esri/units.js",
     "/GISIA/js/tpk/bootstrap-map-js/src/js/bootstrapmap.js",
     "/GISIA/js/tpk/bootstrap-map-js/src/css/bootstrapmap.css",
+    "/GISIA/tpk/bootstrap-map-js/src/css/bootstrapmap.css",
     "/GISIA/bootstrap/3.2.0/css/bootstrap.min.css",
     "/GISIA/arcgis_js_api/library/3.14/3.14/esri/css/esri.css",
     "/GISIA/js/tpk/offline-editor-js/dist/offline-tpk-src.js",
@@ -33,19 +40,25 @@ var urlsToCache = [
     "/GISIA/css/images/map/logo-med.png",
     "/GISIA/css/dijit/images/ajax-loader.gif",    
     "/GISIA/js/vendor/bootstrap.min.js",
-    "/GISIA/js/helloworld.js",
-    "/GISIA/js/basemapmodel.js",
-    "/GISIA/js/basemapviewmodel.js",
+    "/GISIA/js/Basemap/BasemapModel.js",
+    "/GISIA/js/Basemap/BasemapViewModel.js",
+    "/GISIA/js/Basemap/BasemapView.js",
     "/GISIA/html/about.html",
-    "/GISIA/html/basemap.html",
+    "/GISIA/html/Basemap.html",
     "/GISIA/html/bookmarks.html",
     "/GISIA/html/camera.html",
-    "/GISIA/html/data.html",
+    "/GISIA/html/Data.html",
+    "/GISIA/js/Data/DataModel.js",
+    "/GISIA/js/Data/DataViewModel.js",
+    "/GISIA/js/Data/DataView.js",    
     "/GISIA/html/helloworld.html",
     "/GISIA/html/home.html",
     "/GISIA/html/tracing.html",    
-    "/GISIA/html/map.html",    
-    "/GISIA/html/synch.html"
+    "/GISIA/html/Map.html",    
+    "/GISIA/html/synch.html",
+    "/GISIA/arcgis_js_api/library/3.14/3.14/esri/images/map/logo-med.png",
+    "/GISIA/arcgis_js_api/library/3.14/3.14/esri/dijit/images/ajax-loader.gif",
+    "/GISIA/resources/kml/palmsprings.kml"
 ];
 
 if ('serviceWorker' in navigator)
@@ -62,15 +75,22 @@ self.addEventListener("install", function(event){
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then (function (cache){
+                try{
                 console.log("Opened Cache");
                 return cache.addAll(urlsToCache);
+                }
+                catch(e){
+                    debugger;
+                }
             })
     );
 });
 
 self.addEventListener("fetch",function(event){
+    //console.log("GETTING FILE: " + event.request);
     event.respondWith(
         caches.match(event.request)
+        
             .then(function (response){
                 if(response){
                     //debugger;
@@ -78,7 +98,10 @@ self.addEventListener("fetch",function(event){
                     return response;
                 }
                 else{ //Since we didn't find the file in the cache, we try to fetch it. 
+                    console.log("file not found - CaSe MaTtErS " );
+                    debugger;
                     var fetchRequest = event.request.clone();//clone first since request/response are streams
+                    
                     return fetch(fetchRequest)
                         .then(function(response){
                             if(! response || response.status !== 200 || response.type !== 'basic'){
