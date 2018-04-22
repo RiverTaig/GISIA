@@ -1,1 +1,31 @@
-Tracing
+<div class="pwa-control">
+    <h2>Electric Tracing</h2>
+    <h4>Trace upstream from any electric service point on the network, or trace downstream from any point on the network.
+    </h4>
+    <input type="checkbox" id="chkTraceUpstream" name="subscribe" value="newsletter">
+    <label for="subscribeNews">Trace Upstream</label>
+    <br>
+    <input type="checkbox" id="chkTraceDownstream" name="subscribe" value="newsletter">
+    <label for="subscribeNews">Trace Downstream</label>
+    <br>
+    <h4>Select Colors for Traces</h4>
+    <table class="gisia-table">
+        <tr>
+            <td>Upstream</td>
+            <td>
+                <input type="color" name="favcolor" id="gisia-colTraceUpstream" value="#ff0000">
+            </td>
+        </tr>
+        <tr>
+            <td>Downstream</td>
+            <td>
+                <input type="color" name="favcolor" id="gisia-colTraceDownstream" value="#ff00ff">
+            </td>
+        </tr>
+
+    </table>
+    <br>
+    <div id="button-wrap-inner" onclick="ViewEvent('TracingView','onBackToMapClick')">
+        <a class="btn">Map</a>
+    </div>
+</div>

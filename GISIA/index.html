@@ -106,9 +106,9 @@
 </head>
 
 <body>
-    <button id="testFiles" onclick="TestFiles()">TestFiles</button>
+    <!-- <button id="testFiles" onclick="TestFiles()">TestFiles</button> -->
     <div id="divMain">
-        <div class="topnav" id="myTopnav"  >
+        <div class="topnav" id="myTopnav">
             <a content="" id="activeAnchor" class="responsive-visible"> </a>
             <a content="Map" id="mapAnchor" content="Map" class="active">Map</a>
             <a content="Basemap">Basemap</a>
@@ -122,7 +122,7 @@
             <a content="About">About</a>
             <!-- <a content="Map" content="Map" class="active" display="none" >Back to Map</a> -->
             <!-- <a content="HelloWorld">Hello World!</a> -->
-            <a href="javascript:void(0);" id="gisia-menu"  class="icon" onclick="displayMenu()">&#9776;</a>
+            <a href="javascript:void(0);" id="gisia-menu" class="icon" onclick="displayMenu()">&#9776;</a>
         </div>
 
 
@@ -161,7 +161,7 @@
 
 
 
-    
+
     <!-- <script src="arcgis_js_api/library/3.14/3.14/init.js"></script> -->
     <!-- <script src="js/helloworld.js"></script> -->
     <script src="js/vendor/jquery-3.3.1.min.js"></script>
@@ -187,64 +187,64 @@
             //var test = JQ("#divMain");
             //alert("Test");
             var urlsToCache = [
-            "/GISIA/index.html",
-    "/GISIA/tpk-layer.html",
-    "/GISIA/sw.js",
-    "/GISIA/arcgis_js_api/library/3.14/3.14/dojo/resources/blank.gif",
-    "/GISIA/favicon.ico",
-    "/GISIA/css/normalize.css",
-    "/GISIA/css/main.css",
-    "/GISIA/js/main.js",
-    "/GISIA/js/createdatabase.js",
-    "/GISIA/js/offlinetpk2.js",
-    "/GISIA/js/onlinedetection.js",
-    "/GISIA/js/vendor/jquery-3.3.1.min.js",
-    "/GISIA/js/vendor/jquery-ui.min.js",
-    "/GISIA/resources/images/thumb.png",
-    "/GISIA/css/vendor/jquery-ui.min.css",
-    "/GISIA/resources/tpk/waterton1_16.zip",
-    "/GISIA/arcgis_js_api/library/3.14/3.14/init.js",
-    "/GISIA/arcgis_js_api/library/3.14/3.14/esri/nls/jsapi_en-us.js",
-    "/GISIA/arcgis_js_api/library/3.14/3.14/dojox/gfx/svg.js",
-    "/GISIA/arcgis_js_api/library/3.14/3.14/esri/map.js",
-    "/GISIA/arcgis_js_api/library/3.14/3.14/esri/geometry/circle.js",
-    "/GISIA/arcgis_js_api/library/3.14/3.14/dojo/on.js",
-    "/GISIA/arcgis_js_api/library/3.14/3.14/esri/symbols/simplefillsymbol.js",
-    "/GISIA/arcgis_js_api/library/3.14/3.14/esri/graphic.js",
-    "/GISIA/arcgis_js_api/library/3.14/3.14/esri/layers/graphicslayer.js",
-    "/GISIA/arcgis_js_api/library/3.14/3.14/esri/units.js",
-    "/GISIA/js/tpk/bootstrap-map-js/src/js/bootstrapmap.js",
-    "/GISIA/js/tpk/bootstrap-map-js/src/css/bootstrapmap.css",
-    "/GISIA/tpk/bootstrap-map-js/src/css/bootstrapmap.css",
-    "/GISIA/bootstrap/3.2.0/css/bootstrap.min.css",
-    "/GISIA/arcgis_js_api/library/3.14/3.14/esri/css/esri.css",
-    "/GISIA/js/tpk/offline-editor-js/dist/offline-tpk-src.js",
-    "/GISIA/arcgis_js_api/library/3.14/3.14/dojo/NodeList-traverse.js",
-    "/GISIA/css/images/map/logo-med.png",
-    "/GISIA/css/dijit/images/ajax-loader.gif",    
-    "/GISIA/js/vendor/bootstrap.min.js",
-    "/GISIA/js/Basemap/BasemapModel.js",
-    "/GISIA/js/Basemap/BasemapViewModel.js",
-    "/GISIA/js/Basemap/BasemapView.js",
-    "/GISIA/html/about.html",
-    "/GISIA/html/Basemap.html",
-    "/GISIA/html/bookmarks.html",
-    "/GISIA/html/camera.html",
-    "/GISIA/html/Data.html",
-    "/GISIA/js/Data/DataModel.js",
-    "/GISIA/js/Data/DataViewModel.js",
-    "/GISIA/js/Data/DataView.js",    
-    "/GISIA/html/helloworld.html",
-    "/GISIA/html/home.html",
-    "/GISIA/html/tracing.html",    
-    "/GISIA/html/Map.html",    
-    "/GISIA/html/synch.html",
-    "/GISIA/arcgis_js_api/library/3.14/3.14/esri/images/map/logo-med.png",
-    "/GISIA/arcgis_js_api/library/3.14/3.14/esri/dijit/images/ajax-loader.gif",
-    "/GISIA/resources/kml/palmsprings.kml"
-];
+                "/GISIA/index.html",
+                "/GISIA/tpk-layer.html",
+                "/GISIA/sw.js",
+                "/GISIA/arcgis_js_api/library/3.14/3.14/dojo/resources/blank.gif",
+                "/GISIA/favicon.ico",
+                "/GISIA/css/normalize.css",
+                "/GISIA/css/main.css",
+                "/GISIA/js/main.js",
+                "/GISIA/js/createdatabase.js",
+                "/GISIA/js/offlinetpk2.js",
+                "/GISIA/js/onlinedetection.js",
+                "/GISIA/js/vendor/jquery-3.3.1.min.js",
+                "/GISIA/js/vendor/jquery-ui.min.js",
+                "/GISIA/resources/images/thumb.png",
+                "/GISIA/css/vendor/jquery-ui.min.css",
+                "/GISIA/resources/tpk/waterton1_16.zip",
+                "/GISIA/arcgis_js_api/library/3.14/3.14/init.js",
+                "/GISIA/arcgis_js_api/library/3.14/3.14/esri/nls/jsapi_en-us.js",
+                "/GISIA/arcgis_js_api/library/3.14/3.14/dojox/gfx/svg.js",
+                "/GISIA/arcgis_js_api/library/3.14/3.14/esri/map.js",
+                "/GISIA/arcgis_js_api/library/3.14/3.14/esri/geometry/circle.js",
+                "/GISIA/arcgis_js_api/library/3.14/3.14/dojo/on.js",
+                "/GISIA/arcgis_js_api/library/3.14/3.14/esri/symbols/simplefillsymbol.js",
+                "/GISIA/arcgis_js_api/library/3.14/3.14/esri/graphic.js",
+                "/GISIA/arcgis_js_api/library/3.14/3.14/esri/layers/graphicslayer.js",
+                "/GISIA/arcgis_js_api/library/3.14/3.14/esri/units.js",
+                "/GISIA/js/tpk/bootstrap-map-js/src/js/bootstrapmap.js",
+                "/GISIA/js/tpk/bootstrap-map-js/src/css/bootstrapmap.css",
+                "/GISIA/tpk/bootstrap-map-js/src/css/bootstrapmap.css",
+                "/GISIA/bootstrap/3.2.0/css/bootstrap.min.css",
+                "/GISIA/arcgis_js_api/library/3.14/3.14/esri/css/esri.css",
+                "/GISIA/js/tpk/offline-editor-js/dist/offline-tpk-src.js",
+                "/GISIA/arcgis_js_api/library/3.14/3.14/dojo/NodeList-traverse.js",
+                "/GISIA/css/images/map/logo-med.png",
+                "/GISIA/css/dijit/images/ajax-loader.gif",
+                "/GISIA/js/vendor/bootstrap.min.js",
+                "/GISIA/js/Basemap/BasemapModel.js",
+                "/GISIA/js/Basemap/BasemapViewModel.js",
+                "/GISIA/js/Basemap/BasemapView.js",
+                "/GISIA/html/about.html",
+                "/GISIA/html/Basemap.html",
+                "/GISIA/html/bookmarks.html",
+                "/GISIA/html/camera.html",
+                "/GISIA/html/Data.html",
+                "/GISIA/js/Data/DataModel.js",
+                "/GISIA/js/Data/DataViewModel.js",
+                "/GISIA/js/Data/DataView.js",
+                "/GISIA/html/helloworld.html",
+                "/GISIA/html/home.html",
+                "/GISIA/html/tracing.html",
+                "/GISIA/html/Map.html",
+                "/GISIA/html/synch.html",
+                "/GISIA/arcgis_js_api/library/3.14/3.14/esri/images/map/logo-med.png",
+                "/GISIA/arcgis_js_api/library/3.14/3.14/esri/dijit/images/ajax-loader.gif",
+                "/GISIA/resources/kml/palmsprings.kml"
+            ];
             for (var i = 0; i < urlsToCache.length; i++) {
-                
+
                 var request = new XMLHttpRequest();
                 var url = urlsToCache[i];
                 console.log(url);
@@ -260,6 +260,7 @@
             }
         }
     </script>
+    
 </body>
 
 </html>

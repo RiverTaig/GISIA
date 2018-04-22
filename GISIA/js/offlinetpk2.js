@@ -58,7 +58,7 @@ define([
                     radiusUnit: Units.FEET
                 });
                 var graphic = new Graphic(circle, symbol);
-                gl.add(graphic);
+                //gl.add(graphic);
             });
 
         };

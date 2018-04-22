@@ -10,12 +10,6 @@ define(["require", "exports"], function (require, exports) {
             view.initialize(this);
             model.initialize(this);
         }
-        DataViewModel.prototype.Data_AddToMap_Click = function () {
-            alert("Click");
-        };
-        DataViewModel.prototype.GetANumber = function () {
-            return 3.12;
-        };
         DataViewModel.prototype.GetTPK = function (url) {
             if (window.DEBUG) {
                 debugger;

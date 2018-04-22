@@ -1,4 +1,4 @@
-define(["require", "exports", "esri/layers/KMLLayer"], function (require, exports, KMLLayer) {
+define(["require", "exports", "./MakeData"], function (require, exports, MakeData_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var DataView = /** @class */ (function () {
@@ -8,55 +8,34 @@ define(["require", "exports", "esri/layers/KMLLayer"], function (require, export
         }
         DataView.prototype.initialize = function (viewModel) {
             this._viewModel = viewModel;
-            //this._viewModel.GetTPK("http://localhost/GISIA/resources/tpk/waterton1_16.zip");
             var select = document.getElementById("DataViewSelect");
             var optElement = document.createElement("option");
-            optElement.text = "Palm Springs";
-            optElement.value = "http://localhost/GISIA/resources/kml/palmsprings.kml";
-            optElement.selected = true;
+            optElement.text = "Electric Service Points";
+            optElement.value = "Electric Service Points";
+            optElement.selected = false;
             select.add(optElement, null);
-            //select.appendChild(x);
+            select.appendChild(optElement);
+            optElement = document.createElement("option");
+            optElement.text = "Electric Lines";
+            optElement.value = "Electric Lines";
+            optElement.selected = false;
             select.add(optElement, null);
             optElement = document.createElement("option");
-            optElement.text = "Waterton";
-            optElement.value = "http://localhost/GISIA/resources/tpk/PS1-14.zip";
+            optElement.text = "Electric Lines and Points";
+            optElement.value = "Electric Lines and Points";
             optElement.selected = true;
             select.add(optElement, null);
         };
+        //private makeData : MakeData = null;
         DataView.prototype.onAddDataToMapClick = function () {
-            if (window.DEBUG) {
-                debugger;
-            }
-            console.log("on add to map click");
-            var select = document.getElementById("DataViewSelect");
-            var url = select[select.selectedIndex].value;
-            console.log(url);
-            var kmlUrl = "http://localhost/GISIA/resources/kml/tpk/palmsprings.kml";
-            var kmlLayer = new KMLLayer("kmlLayer", kmlUrl);
-            var map;
-            map = window.gisia.map;
-            map.addLayer(kmlLayer);
-            kmlLayer.on("load", function () {
-                alert("layer loaded");
-                //domStyle.set("loading", "display", "none");
-            });
-            // require([
-            //     "esri/layers/KMLLayer",
-            //     "dojo/parser", "dojo/dom-style",
-            //     "dijit/layout/BorderContainer", "dijit/layout/ContentPane", "dojo/domReady!"
-            //   ], function(KMLLayer : esri.KMLLayer  ,
-            //     parser, domStyle
-            //   ) {
-            //     let gisia = (window as any).gisia as any;
-            //     let map : KMLLayer;
-            //     var kmlUrl = "http://localhost/GISIA/resources/kml/tpk/palmsprings.kml";
-            //     var kml = new KMLLayer(kmlUrl);
-            //     map.addLayer(kml);
-            //     kml.on("load", function() {
-            //       domStyle.set("loading", "display", "none");
-            //     });
-            //   });
-            //this._viewModel.GetTPK(url);
+            var makeData = new MakeData_1.MakeData(window.gisia.map);
+            makeData.ClearGraphics();
+            makeData.MakeData();
+            makeData.MakeSPGraphicsIntoFeatureLayer();
+            makeData.MakeLinesIntoFeatureLayer();
+            window.displayMenu();
+            window.$("#mapAnchor").trigger("click");
+            return;
         };
         return DataView;
     }());

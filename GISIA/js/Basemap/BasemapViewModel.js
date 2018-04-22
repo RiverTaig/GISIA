@@ -10,12 +10,6 @@ define(["require", "exports"], function (require, exports) {
             view.initialize(this);
             model.initialize(this);
         }
-        BasemapViewModel.prototype.baseMap_AddToMap_Click = function () {
-            alert("Click");
-        };
-        BasemapViewModel.prototype.GetANumber = function () {
-            return 3.12;
-        };
         BasemapViewModel.prototype.GetTPK = function (url) {
             if (window.DEBUG) {
                 debugger;

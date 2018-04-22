@@ -8,19 +8,19 @@ define(["require", "exports"], function (require, exports) {
             console.log("basemap viewer constructor");
         }
         BasemapView.prototype.initialize = function (viewModel) {
-            this._viewModel = viewModel; //test
-            //this._viewModel.GetTPK("http://localhost/GISIA/resources/tpk/waterton1_16.zip");
+            this._viewModel = viewModel; //testnew comment
             var select = document.getElementById("baseMapViewSelect");
             var optElement = document.createElement("option");
             optElement.text = "Waterton National Park";
-            optElement.value = "http://localhost/GISIA/resources/tpk/waterton1_16.zip";
+            optElement.value = "/GISIA/resources/tpk/waterton1_16.zip";
             optElement.selected = true;
             select.add(optElement, null);
             //select.appendChild(x);
+            //changed
             select.add(optElement, null);
             optElement = document.createElement("option");
             optElement.text = "Palm Springs";
-            optElement.value = "http://localhost/GISIA/resources/tpk/PS1-14.zip";
+            optElement.value = "/GISIA/resources/tpk/palmsprings1-18.zip";
             optElement.selected = true;
             select.add(optElement, null);
         };

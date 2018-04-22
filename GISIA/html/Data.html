@@ -1,11 +1,52 @@
 <div class="pwa-control">
-    <h2>Select a KML file</h2>
+    <h2>Add data to the map</h2>
+    <h4>Please select the dataset(s) to add to the map. For purposes of demonstration, random data will be created based on your
+        selection.
+    </h4>
     <select class="gisia-select" id="DataViewSelect">
     </select>
     <br>
     <br>
+
+    <div>
+        <input type="checkbox" id="gisia-chkVaryByUsage" name="subscribe" value="newsletter">
+        <label for="subscribeNews">Vary Size by Usage</label><br>
+        <h4>Select Colors for Electric Service Points</h4>
+        <table class="gisia-table">
+            <tr>
+                <td>Winter</td>
+                <td>
+                    <input type="color" name="favcolor" id="gisiaWinter" value="#ff0000">
+                </td>
+            </tr>
+            <tr>
+                <td>Spring</td>
+                <td>
+                    <input type="color" name="favcolor" id="gisiaSpring" value="#ff0000">
+                </td>
+            </tr>
+            <tr>
+                <td>Summer</td>
+                <td>
+                    <input type="color" name="favcolor" id="gisiaSummer" value="#ff0000">
+                </td>
+            </tr>
+            <tr>
+                <td>Fall</td>
+                <td>
+                    <input type="color" name="favcolor" id="gisiaFall" value="#ff0000">
+                </td>
+            </tr>
+        </table>
+
+
+
+        <br>
+
+    </div>
+    <br>
     <div id="button-wrap-inner" onclick="ViewEvent('DataView','onAddDataToMapClick')">
-        <a class="btn">Add KML to Map</a>
+        <a class="btn">Make Data</a>
     </div>
 
 </div>

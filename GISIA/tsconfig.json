@@ -10,15 +10,18 @@
       "preserveConstEnums": true,
       "suppressImplicitAnyIndexErrors": true,
       "outDir": "./js"
-
     },
     "types":["arcgis-js-api"],
+    "files":[
+      "./node_modules/dojo-typings/dojo/1.11/index.d.ts",
+      "./node_modules/dojo-typings/dojo/1.11/modules.d.ts",
+      "./node_modules/dojo-typings/dijit/1.11/index.d.ts",
+      "./node_modules/dojo-typings/dijit/1.11/modules.d.ts",
+      "./node_modules/dojo-typings/dojox/1.11/index.d.ts",
+      "./node_modules/dojo-typings/dojox/1.11/modules.d.ts"      
+    ],
     "include":[
-      "./TypeScript/**/*.ts",
-      "./app/**/*.ts",
-      "../dojo/1.11/modules.d.ts",
-      "../GISIA/node_modules/dojo-typings/dijit/1.11/modules.d.ts",
-      "../GISIA/node_modules/dojo-typings/dojox/1.11/modules.d.ts"
+      "./app/**/*.ts"
     ],
     "exclude": [
       "node_modules"

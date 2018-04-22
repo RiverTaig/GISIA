@@ -1,17 +1,8 @@
 
-// Grab elements, create settings, etc.
-//var video = document.getElementById('video');
-//test
-// Get access to the camera!
-//if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-// Not adding `{ audio: true }` since we only want video now
-//    navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
-//       video.src = window.URL.createObjectURL(stream);
-//      video.play();
-// });
-//}
-function ViewEvent(view, event)
-{
+
+
+var _lastError = "Last Error goes here";
+function ViewEvent(view, event) {
     __MVVM_Views[view][event]();
 
 }
@@ -20,11 +11,11 @@ function executeFunctionByName(functionName, context /*, args */) {
     var args = Array.prototype.slice.call(arguments, 2);
     var namespaces = functionName.split(".");
     var func = namespaces.pop();
-    for(var i = 0; i < namespaces.length; i++) {
-      context = context[namespaces[i]];
+    for (var i = 0; i < namespaces.length; i++) {
+        context = context[namespaces[i]];
     }
     return context[func].apply(context, args);
-  }
+}
 
 
 
@@ -76,8 +67,8 @@ function saveBlob(db) {
     //Create blob from DataURL
     var blob = dataURItoBlob(img_b64);
     //img = document.createElement("img");
-    //img.src = URL.createObjectURL(blob);
-
+    let path = URL.createObjectURL(blob);
+    window.gisiaLastSavedPicture = path;
 
 
     var transaction = db.transaction(["pictures"], "readwrite");
@@ -114,6 +105,19 @@ function createGuid() {
 function btnMedia_Click() {
 
     document.getElementById("divPictureArea").style.display = "inherit";
+    // Grab elements, create settings, etc.
+    var video = document.getElementById('video');
+    //test
+    //Get access to the camera!
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        //Not adding `{ audio: true }` since we only want video now
+        navigator.mediaDevices.getUserMedia({ video: true }).then(function (stream) {
+            video.src = window.URL.createObjectURL(stream);
+            video.play();
+        });
+    }
+
+
 }
 function btnDisplayImage_Click() {
     console.log("btnDisplayImage_Click 1 ");
@@ -121,16 +125,28 @@ function btnDisplayImage_Click() {
         console.log("btnDisplayImage_Click 2");
         var transaction = db.transaction(["pictures"], "readonly");
         var objectStore = transaction.objectStore("pictures");
-        //debugger;
+        debugger;
         var getFirstImageKeyRequest = objectStore.getAllKeys();
         getFirstImageKeyRequest.onsuccess = function (res) {
-            var firstImageKey = res.target.result[0]; // First file in db
-            var objectStoreRequest = objectStore.get(firstImageKey);
+            var totalFiles = res.target.result.length;
+            let keyToGet = "";
+            for(let i = 0; i < totalFiles; i++){
+                let imageKey = res.target.result[i];
+                if(imageKey == window.gisiaLastSavedPicture ){
+                    keyToGet = imageKey;
+                    break;
+                }
+            }
+            //var firstImageKey = res.target.result[totalFiles-1]; // First file in db
+            var objectStoreRequest = objectStore.get(keyToGet);
             objectStoreRequest.onsuccess = function (event) {
                 var imgFile = objectStoreRequest.result;
                 var imgURL = window.URL.createObjectURL(imgFile);
                 var imgPicture = document.getElementById("thumb");
                 imgPicture.setAttribute("src", imgURL);
+                document.getElementById('thumb').style.visibility="visible";
+                window.gisiaActiveImage=imgURL;
+                alert("Active feature image set to " + imgURL)
             };
         };
 
@@ -144,7 +160,7 @@ function btnSnapPhoto_Click() {
     var context = canvas.getContext('2d');
     var video = document.getElementById('video');
 
-    context.drawImage(video, 0, 0, 640, 480);
+    context.drawImage(video, 0, 0, 642, 482);
 
 }
 var opt = {
@@ -190,27 +206,51 @@ $(document).ready(function () {
             var modelInstance = null;
             var viewModelInstance = null;
             var viewInstance = null;
+
+
+
             switch (whereTo) {
                 case "Basemap":
-                    //Model
-                    require(["js/Basemap/BasemapModel","js/Basemap/BasemapViewModel","js/Basemap/BasemapView"], function (bmm,bmvm,bmv) {
-                        modelInstance= new bmm.BasemapModel();
-                        viewInstance= new bmv.BasemapView();
-                        viewModelInstance= new bmvm.BasemapViewModel(modelInstance, viewInstance, $);
+                    document.getElementById("gisia-mapHeaderText").style.display = "none";
+                    require(["js/Basemap/BasemapModel", "js/Basemap/BasemapViewModel", "js/Basemap/BasemapView"], function (bmm, bmvm, bmv) {
+                        modelInstance = new bmm.BasemapModel();
+                        viewInstance = new bmv.BasemapView();
+                        viewModelInstance = new bmvm.BasemapViewModel(modelInstance, viewInstance, $);
                         __MVVM_Views.BasemapView = viewInstance;
-                    } );
+                    });
 
-      
+
 
                     break;
                 case "Data":
-                    //var esriTest = new BasemapViewModel();
-                    require(["js/Data/DataModel","js/Data/DataViewModel","js/Data/DataView"], function (m,dvm,dv) {
-                        modelInstance= new m.DataModel();
-                        viewInstance= new dv.DataView();
-                        viewModelInstance= new dvm.DataViewModel(modelInstance, viewInstance, $);
+                    document.getElementById("gisia-mapHeaderText").style.display = "none";
+                    require(["js/Data/DataModel", "js/Data/DataViewModel", "js/Data/DataView", "js/Data/MakeData"], function (m, dvm, dv) {
+                        modelInstance = new m.DataModel();
+                        viewInstance = new dv.DataView();
+                        viewModelInstance = new dvm.DataViewModel(modelInstance, viewInstance, $);
                         __MVVM_Views.DataView = viewInstance;
-                    } );                    
+                    });
+                    break;
+                case "Tracing":
+                    document.getElementById("gisia-mapHeaderText").style.display = "none";
+                    require(["js/Tracing/TracingModel", "js/Tracing/TracingViewModel", "js/Tracing/TracingView"], function (m, dvm, dv) {
+                        modelInstance = new m.TracingModel();
+                        viewInstance = new dv.TracingView();
+                        viewModelInstance = new dvm.TracingViewModel(modelInstance, viewInstance, $);
+                        __MVVM_Views.DataView = viewInstance;
+                    });
+                    break;
+                case "Labels":
+                    document.getElementById("gisia-mapHeaderText").style.display = "none";
+                    require(["js/Labels/LabelsModel", "js/Labels/LabelsViewModel", "js/Labels/LabelsView"], function (m, dvm, dv) {
+                        modelInstance = new m.LabelsModel();
+                        viewInstance = new dv.LabelsView();
+                        viewModelInstance = new dvm.LabelsViewModel(modelInstance, viewInstance, $);
+                        __MVVM_Views.LabelsView = viewInstance;
+                    });
+                    break;
+                case "About":
+
                     break;
             }
 
@@ -257,7 +297,7 @@ $(document).ready(function () {
             else {
                 $("#activeAnchor").text("");
             }
- 
+
         }
 
 

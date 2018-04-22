@@ -1,0 +1,1 @@
+{"version":3,"file":"LabelingModel.js","sourceRoot":"","sources":["../../app/Labels/LabelingModel.ts"],"names":[],"mappings":";;;IAII;QAGI;YADC,eAAU,GAAsB,IAAI,CAAC;YAElC,WAAW;YACX,OAAO,CAAC,GAAG,CAAC,qCAAqC,CAAC,CAAC;QAEvD,CAAC;QACD,kCAAU,GAAV,UAAW,SAA4B;YACnC,IAAI,CAAC,UAAU,GAAG,SAAS,CAAC;QAChC,CAAC;QAEL,oBAAC;IAAD,CAAC,AAZD,IAYC;IAZY,sCAAa"}
