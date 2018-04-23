@@ -215,7 +215,7 @@ export class MakeData {
 
 
         this._mapRef.on("extent-change", (e) => {
-            if(this._labelPresent){
+            if (this._labelPresent) {
                 this._mapRef.graphics.clear();
             }
             let scale = this._mapRef.getScale();
@@ -376,7 +376,7 @@ export class MakeData {
 
     HandleAggregate(json: any, graphic: Graphic): string {
 
-  
+
         //todo delegate this generic stuff to HandleOperataor
         let aggPvPairs: iAggregateOperator = null;
         try {
@@ -405,13 +405,13 @@ export class MakeData {
             //for the sample data, the two fields are Month and Value
             let record = records[i];
             let value = 0;
-            for(let fieldIndex = 0;fieldIndex < record.length; fieldIndex++){
-                if(record[fieldIndex].hasOwnProperty(dataField)){
+            for (let fieldIndex = 0; fieldIndex < record.length; fieldIndex++) {
+                if (record[fieldIndex].hasOwnProperty(dataField)) {
                     value = parseFloat(record[fieldIndex][dataField]);
                     break;
                 }
             }
-            
+
             sum += value;
             if (value > max) {
                 max = value;
@@ -424,13 +424,13 @@ export class MakeData {
         let precision = parseInt(aggPvPairs.round);
         switch (aggPvPairs.operation) {
             case "sum":
-                return  this.PrecisionRound(sum,precision).toString();
+                return this.PrecisionRound(sum, precision).toString();
             case "min":
-                return this.PrecisionRound(min,precision).toString();
+                return this.PrecisionRound(min, precision).toString();
             case "max":
-                return this.PrecisionRound(max,precision).toString();
+                return this.PrecisionRound(max, precision).toString();
             case "avg":
-                return this.PrecisionRound(average,precision).toString();
+                return this.PrecisionRound(average, precision).toString();
         }
         return "";
     }
@@ -447,7 +447,7 @@ export class MakeData {
         return retValue;
     }
 
-    JSONFromLabelElement(labelElement : string) : any {
+    JSONFromLabelElement(labelElement: string): any {
         let firstQuoteIndex = -1;
         let secondQuoteIndex = -1;
         let equalIndex = -1;
@@ -466,7 +466,7 @@ export class MakeData {
                 operationName = labelElement.substring(1, i);
                 json["name"] = operationName;
                 json["params"] = {};
-                paramsNode = json["params"] ;
+                paramsNode = json["params"];
                 foundOperationName = true;
                 startOfVariableIndex = i;
             }
@@ -495,17 +495,17 @@ export class MakeData {
         }
         return json;
     }
-    
-    PrecisionRound(num : number, precision : number) : number {
+
+    PrecisionRound(num: number, precision: number): number {
         var factor = Math.pow(10, precision);
-        let answer : number = Math.round(num * factor) / factor;
+        let answer: number = Math.round(num * factor) / factor;
         return answer;
     }
 
     AddLabelsToGraphics(featureSet: Graphic[]) {
 
         const DISTANCE_AT_LEVEL_15 = 75;
-        const MAXLABELS = 300; //todo read from user
+        const MAXLABELS = 700; //todo read from user
         let checkForOverlap = true;
         let fontSize = 16;
         let stopLabelingAtThisExtent = false;
@@ -516,7 +516,7 @@ export class MakeData {
         let spatRef = this._mapRef.spatialReference;
         let font = new Font(fontSize.toString() + "px", Font.STYLE_NORMAL, Font.VARIANT_NORMAL, Font.WEIGHT_BOLDER);
         font.family = "Arial";
-        let offset = this._mapRef.extent.getWidth() / 60;
+        let offset =  this._mapRef.extent.getWidth() / 60;
         let labelsPlaced = 0;
         let labelExtents: Extent[] = [];
 
@@ -552,13 +552,13 @@ export class MakeData {
                 ts.haloColor = new Color([255, 255, 255]);
                 ts.haloSize = 2;
                 ts.setHorizontalAlignment("left");
-                let newX = x;
-                let newY = y - (lineIndex * amountToAdd);
+                let newX = x + offset;
+                let newY = (y - (lineIndex * amountToAdd)) + offset;
                 let textPoint = new Point(newX, newY);
                 textPoint.spatialReference = spatRef;
                 if (checkForOverlap) {
-                    let lineLength = multiplier * 1.75 * textForLine.length * fontSize;
-                    let thisExtent = new Extent(newX, newY, (newX + lineLength), (newY + fontSize), spatRef);
+                    let lineLength = multiplier * 3.0 * textForLine.length * fontSize;
+                    let thisExtent = new Extent(newX, newY, (newX + lineLength), (newY + (fontSize )), spatRef);
                     if (this.hasOverlaps(labelExtents, thisExtent, currentLabelExtentsIndex) === false) {
                         labelExtents.push(thisExtent);
                         let lt: labelTuple = [textPoint, ts];
@@ -656,7 +656,7 @@ export class MakeData {
 
 
         this._electricLineLayer.on("click", (evt) => {
-
+            debugger;
             let g: Graphic = evt.graphic;
 
 
@@ -790,14 +790,16 @@ export class MakeData {
             ]
         };
         //featureCollection.layerDefinition.drawingInfo.renderer = this._servicePointRenderer;
+
+
         var popupTemplate = new PopupTemplate({
             title: "{FIRSTNAME} {LASTNAME}",
             description: `<div>{ADDRESS}<br>{CITY}, {STATE}<br>{PHONE}<br>
             <br><p id="gisiaTxtMaxUse">click usage to see peak month</p>
             <img width="160px" height="120px" src="${(window as any).gisiaActiveImage}" >
-            <canvas id="canvas" width="240" height="150"></canvas>
-            <br><button id='btnShowData' onclick='
-
+            <canvas id="gisia-canBarChart" width="240" height="150"></canvas>
+            <br><button  class="gisia-btnUsage" id='btnShowData' onclick='
+            
             var usage = {USAGE};
             var data = [];
             for(var i = 0 ; i < 12 ; i++){
@@ -881,14 +883,46 @@ export class MakeData {
 
         });
 
+        //Feature layer click ServicePointClick
         this._spLayer.on("click", (evt) => {
-            
+            debugger;
             let spID = evt.graphic.attributes["LINKID"];
             (window as any).gisiaActiveFeature = spID;
-            let chkTraceUpstream = (<HTMLInputElement>dom.byId("chkTraceUpstream")).checked;
-            let chkTraceDownstream = (<HTMLInputElement>dom.byId("chkTraceDownstream")).checked;
+            let spLayer = this._spLayer;
 
-            if (chkTraceUpstream === false && chkTraceDownstream === false) {
+            let jsonForTemplate = this.PopupTemplateJson();
+            let makeImageVisible = false;
+            let description = jsonForTemplate.description;
+            description = description.replace("**VISIBLE**", "collapse");
+            let pictureDB = (window as any).gisiaPictureToFeatureDB;
+            if (pictureDB !== undefined && pictureDB !== null) {
+                let associatedPicture = pictureDB[spID];
+                if (associatedPicture !== undefined) {
+                    makeImageVisible = true;
+                    let imgTag = `<img width="160px" height="120px" style="visibility:visible" src="${associatedPicture}" >`;
+                    let tagToReplace = "<div id=\"gisia-divDynamicImage\"></div>";
+                    let indexOfTagtoReplace = description.indexOf(tagToReplace);
+                    if (indexOfTagtoReplace > -1) {
+                        description = description.replace(tagToReplace, imgTag);
+                    }
+                }
+            }
+            jsonForTemplate.description = description;
+            this._spLayer.setInfoTemplate(new PopupTemplate(
+                jsonForTemplate
+            ));
+            if (makeImageVisible) {
+                this._mapRef.infoWindow.resize(350, 500);
+            }
+
+
+            let chkTraceUpstream = (<HTMLInputElement>dom.byId("chkTraceUpstream"));
+            let chkTraceDownstream = (<HTMLInputElement>dom.byId("chkTraceDownstream"));
+            if (chkTraceUpstream === undefined || chkTraceUpstream === null) {
+                return;
+            }
+            if (chkTraceUpstream.checked === false ) {
+                debugger;
                 return;
             }
             else {
@@ -1334,6 +1368,90 @@ export class MakeData {
             }]
         };
 
+    }
+    PopupTemplateJson(): any {
+        return {
+            title: "{FIRSTNAME} {LASTNAME}",
+            description: `
+            <div class="gisia-container">
+                <div style="display:inline-block;float:left;margin-right:10px;" class="gisia-left-element">
+            
+                <div id="gisia-div-spInfo">
+                <div>{ADDRESS}<br>{CITY}, {STATE}<br>{PHONE}<br>
+                <p id="gisiaTxtMaxUse"></p>
+                <button id='btnShowData' class='gisia-btnUsage' style="  background-color: #008CBA; 
+                border: none;
+                color: white;
+                padding: 5px 12px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 12px;
+                margin: 4px 2px;
+                cursor: pointer;
+                border-radius:10px;" onclick='
+                var usage = {USAGE};
+                var data = [];
+                for(var i = 0 ; i < 12 ; i++){
+                    data.push(usage.records[i][1].Value);
+                }
+                var canvas = document.getElementById("gisia-canBarChart");
+                if (canvas.getContext) {
+                    var dl = data.length;
+                    var max = -999;
+                    for(var q = 0 ; q < dl; q++){
+                        var curValue = parseFloat(data[q]);
+                        if( curValue > max){
+                            max = curValue;
+                            //alert("max set to " + max);
+                          }
+                      }
+                      document.getElementById("gisiaTxtMaxUse").innerHTML = "Max Use: " + Math.round(max);
+                      //alert("max = " + max)  ;
+                      //alert("data sub 0 " + data[0]);
+                      var data2 =[];
+                      for(var i = 0 ; i < dl; i++){
+                        var val = parseFloat(data[i].toString());
+                        var lessThanOne = val/max;
+                        //alert("less than 1 " + lessThanOne);
+                        data2.push(100 * lessThanOne );
+                      }
+                      
+                      data = data2;
+                      //alert(data[6] );
+                      var months = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+                      var colors = ["#FFFFFF","#AAFFAA","#55FF55","#00FF00","#55FF00","#AAFF00","#FFFF00","#FFE100","#FFC300","#FFA500","#FFC355","#FFE1AA"];
+                      var ctx = canvas.getContext("2d");
+                      ctx.strokStyle = "#000000";
+                      ctx.font = "10px serif";
+                      for(var x = 0 ; x < 12; x++){
+                        var xOffset = x*20;
+                        ctx.fillStyle = colors[x];
+                        var yStart = 100 - data[x];
+                        ctx.fillRect(xOffset, yStart, 15, data[x]);
+                        //alert(yStart + " , " + data[x]);
+                        ctx.strokeRect(xOffset, yStart, 15, data[x]);
+                        ctx.fillStyle = "#000000";
+                        var y = (x % 2 === 0) ? 130 : 120;
+                        ctx.fillText(months[x],xOffset, y);
+                      }
+                      ctx.font = "20px serif";
+                      //ctx.fillText("MAX: " + max.toString(), 50,50) ;
+                }
+     
+      '>Usage</button>
+      </div> 
+                </div>
+          
+            </div>
+            <div style="display:inline-block;float:left" class="gisia-right-element">
+            <div id="gisia-divDynamicImage"></div>
+        </div>  
+        <div>
+                <canvas style="margin-top:15px" id="gisia-canBarChart" width="240" height="150"></canvas>
+                </div>
+            </div>`
+        };
     }
 }
 class Line implements iLine {

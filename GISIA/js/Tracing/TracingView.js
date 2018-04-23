@@ -9,6 +9,10 @@ define(["require", "exports"], function (require, exports) {
         TracingView.prototype.initialize = function (viewModel) {
             this._viewModel = viewModel;
         };
+        TracingView.prototype.onBackToMapClick = function () {
+            window.displayMenu();
+            window.$("#mapAnchor").trigger("click");
+        };
         return TracingView;
     }());
     exports.TracingView = TracingView;

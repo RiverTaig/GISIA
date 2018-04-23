@@ -3,6 +3,7 @@
 
 var _lastError = "Last Error goes here";
 function ViewEvent(view, event) {
+    debugger;
     __MVVM_Views[view][event]();
 
 }
@@ -58,6 +59,7 @@ function getImageDatabase(onSuccessFunction) {
     };
 }
 
+
 function saveBlob(db) {
     console.log("saveBlob 1");
 
@@ -68,11 +70,12 @@ function saveBlob(db) {
     var blob = dataURItoBlob(img_b64);
     //img = document.createElement("img");
     let path = URL.createObjectURL(blob);
-    window.gisiaLastSavedPicture = path;
-
 
     var transaction = db.transaction(["pictures"], "readwrite");
-    var put = transaction.objectStore("pictures").put(blob, createGuid());
+    let guid = createGuid(); 
+    window.gisiaLastSavedPicture = guid;
+    alert("Image Saved!");
+    var put = transaction.objectStore("pictures").put(blob, guid);
     console.log("saveBlob 2");
 }
 
@@ -114,12 +117,29 @@ function btnMedia_Click() {
         navigator.mediaDevices.getUserMedia({ video: true }).then(function (stream) {
             video.src = window.URL.createObjectURL(stream);
             video.play();
+            var video2 = document.getElementById('video');
+            var canvas = document.getElementById('canvas');
+            var thumb = document.getElementById('thumb');
+            thumb.style.visibility="hidden";
+            video2.style.visibility="visible";
+            canvas.style.visibility="hidden";            
         });
     }
 
 
 }
-function btnDisplayImage_Click() {
+
+function btnAssociateToFeature_Click(){
+
+
+    //calling btnDisplayImage with true means that it will save to the pictureToFeatureDB the actual URL of the image
+    //it does that async. 
+    btnDisplayImage_Click(true);
+    //window.gisiaPictureToFeatureDB[window.gisiActiveFeature] = window.gisiaLastSavedPicture;
+}
+//
+
+function btnDisplayImage_Click(onlySetLastSavedPictureURL) {
     console.log("btnDisplayImage_Click 1 ");
     getImageDatabase(function (db) {
         console.log("btnDisplayImage_Click 2");
@@ -132,7 +152,7 @@ function btnDisplayImage_Click() {
             let keyToGet = "";
             for(let i = 0; i < totalFiles; i++){
                 let imageKey = res.target.result[i];
-                if(imageKey == window.gisiaLastSavedPicture ){
+                if(imageKey === window.gisiaLastSavedPicture ){
                     keyToGet = imageKey;
                     break;
                 }
@@ -143,25 +163,39 @@ function btnDisplayImage_Click() {
                 var imgFile = objectStoreRequest.result;
                 var imgURL = window.URL.createObjectURL(imgFile);
                 var imgPicture = document.getElementById("thumb");
-                imgPicture.setAttribute("src", imgURL);
-                document.getElementById('thumb').style.visibility="visible";
-                window.gisiaActiveImage=imgURL;
-                alert("Active feature image set to " + imgURL)
+                debugger;
+                if(! onlySetLastSavedPictureURL){
+                    imgPicture.setAttribute("src", imgURL);
+                    
+                    document.getElementById('thumb').style.visibility="visible";
+                }
+                else{
+                    debugger;
+                    if(window.gisiaPictureToFeatureDB === undefined){
+                        window.gisiaPictureToFeatureDB = {};
+                    }                    
+                    window.gisiaLastSavedPictureURL = imgURL;
+                    if(window.gisiaActiveFeature ){
+                        window.gisiaPictureToFeatureDB[window.gisiaActiveFeature] = imgURL;
+                    }
+                    alert("Image assoicated with feature " + window.gisiaActiveFeature )     ;               
+                }
             };
         };
 
     });
-
-
 }
 
 function btnSnapPhoto_Click() {
+
     var canvas = document.getElementById('canvas');
+    canvas.style.visibility="visible";
     var context = canvas.getContext('2d');
     var video = document.getElementById('video');
 
     context.drawImage(video, 0, 0, 642, 482);
-
+   video.style.visibility="hidden";
+    
 }
 var opt = {
     autoOpen: false,
@@ -237,7 +271,7 @@ $(document).ready(function () {
                         modelInstance = new m.TracingModel();
                         viewInstance = new dv.TracingView();
                         viewModelInstance = new dvm.TracingViewModel(modelInstance, viewInstance, $);
-                        __MVVM_Views.DataView = viewInstance;
+                        __MVVM_Views.TracingView = viewInstance;
                     });
                     break;
                 case "Labels":
@@ -246,6 +280,7 @@ $(document).ready(function () {
                         modelInstance = new m.LabelsModel();
                         viewInstance = new dv.LabelsView();
                         viewModelInstance = new dvm.LabelsViewModel(modelInstance, viewInstance, $);
+                        debugger;
                         __MVVM_Views.LabelsView = viewInstance;
                     });
                     break;

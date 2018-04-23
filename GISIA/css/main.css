@@ -14,10 +14,38 @@ body {
     left: 5px;
  
   }
+ .gisia-.left-element {
+    background: green;
+    margin-right:10px;
+    display: inline-block;
+    
+}
 
+.gisia-.right-element {
+    background: red;
+    display: inline-block;
+    
+}
+#gisia-div-spInfo{
+  margin-top:10px;
+}
   .lime{
       color:blue;
       font-weight: bold;
+  }
+  #gisia-homeHeader{
+  background-image: linear-gradient(to right, rgb(45, 90, 127), rgb(90, 180, 255) 15%, rgb(45, 90, 127) 30%, rgb(255,255,255) 100%);
+                color: white;
+                padding: 15px;
+                border-radius: 15px;
+                color:white;
+                font-size: 
+  }
+  .gisia-liHome li{
+    font-size: large;
+    color: rgb(45, 90, 127);
+    font-style: italic;
+    line-height: 50px;
   }
   .red{
       color:red;
@@ -115,6 +143,44 @@ body {
       right: 0;
       top: 0;
     }
+    
+.gisia.left-element {
+ 
+  display: inline-block;
+
+}
+
+li {
+  color: dodgerblue;
+  line-height: 50px;
+  font-size: large;
+  font-style:italic;
+}
+
+.gisia-btnUsage{
+  background-color: #008CBA; 
+  border: none;
+  color: white;
+  padding: 5px 12px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 12px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius:10px;
+}
+#gisia-canBarChart{
+  margin-top: 15px;
+} 
+
+.gisia.right-element {
+ 
+  display: inline-block;
+  margin-left: 10px;
+  margin-bottom: 5px;  
+
+}
     .topnav.responsive a {
       float: none;
       display: block;

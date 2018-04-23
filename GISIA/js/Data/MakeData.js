@@ -396,7 +396,7 @@ define(["require", "exports", "dojo/dom", "esri/layers/GraphicsLayer", "esri/geo
         MakeData.prototype.AddLabelsToGraphics = function (featureSet) {
             var _this = this;
             var DISTANCE_AT_LEVEL_15 = 75;
-            var MAXLABELS = 300; //todo read from user
+            var MAXLABELS = 700; //todo read from user
             var checkForOverlap = true;
             var fontSize = 16;
             var stopLabelingAtThisExtent = false;
@@ -437,13 +437,13 @@ define(["require", "exports", "dojo/dom", "esri/layers/GraphicsLayer", "esri/geo
                     ts.haloColor = new Color([255, 255, 255]);
                     ts.haloSize = 2;
                     ts.setHorizontalAlignment("left");
-                    var newX = x;
-                    var newY = y - (lineIndex * amountToAdd);
+                    var newX = x + offset;
+                    var newY = (y - (lineIndex * amountToAdd)) + offset;
                     var textPoint = new Point(newX, newY);
                     textPoint.spatialReference = spatRef;
                     if (checkForOverlap) {
-                        var lineLength = multiplier * 1.75 * textForLine.length * fontSize;
-                        var thisExtent = new Extent(newX, newY, (newX + lineLength), (newY + fontSize), spatRef);
+                        var lineLength = multiplier * 3.0 * textForLine.length * fontSize;
+                        var thisExtent = new Extent(newX, newY, (newX + lineLength), (newY + (fontSize)), spatRef);
                         if (this.hasOverlaps(labelExtents, thisExtent, currentLabelExtentsIndex) === false) {
                             labelExtents.push(thisExtent);
                             var lt = [textPoint, ts];
@@ -528,6 +528,7 @@ define(["require", "exports", "dojo/dom", "esri/layers/GraphicsLayer", "esri/geo
                 }
             });
             this._electricLineLayer.on("click", function (evt) {
+                debugger;
                 var g = evt.graphic;
                 var chkTraceUpstream = dom.byId("chkTraceUpstream").checked;
                 var chkTraceDownstream = dom.byId("chkTraceDownstream").checked;
@@ -660,7 +661,7 @@ define(["require", "exports", "dojo/dom", "esri/layers/GraphicsLayer", "esri/geo
             //featureCollection.layerDefinition.drawingInfo.renderer = this._servicePointRenderer;
             var popupTemplate = new PopupTemplate({
                 title: "{FIRSTNAME} {LASTNAME}",
-                description: "<div>{ADDRESS}<br>{CITY}, {STATE}<br>{PHONE}<br>\n            <br><p id=\"gisiaTxtMaxUse\">click usage to see peak month</p>\n            <img width=\"160px\" height=\"120px\" src=\"" + window.gisiaActiveImage + "\" >\n            <canvas id=\"canvas\" width=\"240\" height=\"150\"></canvas>\n            <br><button id='btnShowData' onclick='\n\n            var usage = {USAGE};\n            var data = [];\n            for(var i = 0 ; i < 12 ; i++){\n                data.push(usage.records[i][1].Value);\n            }\n            var canvas = document.getElementById(\"canvas\");\n            if (canvas.getContext) {\n                var dl = data.length;\n                var max = -999;\n                for(var q = 0 ; q < dl; q++){\n                    var curValue = parseFloat(data[q]);\n                    if( curValue > max){\n                        max = curValue;\n                        //alert(\"max set to \" + max);\n                      }\n                  }\n                  document.getElementById(\"gisiaTxtMaxUse\").innerHTML = \"Max Use: \" + Math.round(max);\n                  //alert(\"max = \" + max)  ;\n                  //alert(\"data sub 0 \" + data[0]);\n                  var data2 =[];\n                  for(var i = 0 ; i < dl; i++){\n                    var val = parseFloat(data[i].toString());\n                    var lessThanOne = val/max;\n                    //alert(\"less than 1 \" + lessThanOne);\n                    data2.push(100 * lessThanOne );\n                  }\n                  \n                  data = data2;\n                  //alert(data[6] );\n                  var months = [\"JAN\",\"FEB\",\"MAR\",\"APR\",\"MAY\",\"JUN\",\"JUL\",\"AUG\",\"SEP\",\"OCT\",\"NOV\",\"DEC\"];\n                  var colors = [\"#FFFFFF\",\"#AAFFAA\",\"#55FF55\",\"#00FF00\",\"#55FF00\",\"#AAFF00\",\"#FFFF00\",\"#FFE100\",\"#FFC300\",\"#FFA500\",\"#FFC355\",\"#FFE1AA\"];\n                  var ctx = canvas.getContext(\"2d\");\n                  ctx.strokStyle = \"#000000\";\n                  ctx.font = \"10px serif\";\n                  for(var x = 0 ; x < 12; x++){\n                    var xOffset = x*20;\n                    ctx.fillStyle = colors[x];\n                    var yStart = 100 - data[x];\n                    ctx.fillRect(xOffset, yStart, 15, data[x]);\n                    //alert(yStart + \" , \" + data[x]);\n                    ctx.strokeRect(xOffset, yStart, 15, data[x]);\n                    ctx.fillStyle = \"#000000\";\n                    var y = (x % 2 === 0) ? 130 : 120;\n                    ctx.fillText(months[x],xOffset, y);\n                  }\n                  ctx.font = \"20px serif\";\n                  //ctx.fillText(\"MAX: \" + max.toString(), 50,50) ;\n            }\n \n  '>Usage</button>  \n            </div>"
+                description: "<div>{ADDRESS}<br>{CITY}, {STATE}<br>{PHONE}<br>\n            <br><p id=\"gisiaTxtMaxUse\">click usage to see peak month</p>\n            <img width=\"160px\" height=\"120px\" src=\"" + window.gisiaActiveImage + "\" >\n            <canvas id=\"gisia-canBarChart\" width=\"240\" height=\"150\"></canvas>\n            <br><button  class=\"gisia-btnUsage\" id='btnShowData' onclick='\n            \n            var usage = {USAGE};\n            var data = [];\n            for(var i = 0 ; i < 12 ; i++){\n                data.push(usage.records[i][1].Value);\n            }\n            var canvas = document.getElementById(\"canvas\");\n            if (canvas.getContext) {\n                var dl = data.length;\n                var max = -999;\n                for(var q = 0 ; q < dl; q++){\n                    var curValue = parseFloat(data[q]);\n                    if( curValue > max){\n                        max = curValue;\n                        //alert(\"max set to \" + max);\n                      }\n                  }\n                  document.getElementById(\"gisiaTxtMaxUse\").innerHTML = \"Max Use: \" + Math.round(max);\n                  //alert(\"max = \" + max)  ;\n                  //alert(\"data sub 0 \" + data[0]);\n                  var data2 =[];\n                  for(var i = 0 ; i < dl; i++){\n                    var val = parseFloat(data[i].toString());\n                    var lessThanOne = val/max;\n                    //alert(\"less than 1 \" + lessThanOne);\n                    data2.push(100 * lessThanOne );\n                  }\n                  \n                  data = data2;\n                  //alert(data[6] );\n                  var months = [\"JAN\",\"FEB\",\"MAR\",\"APR\",\"MAY\",\"JUN\",\"JUL\",\"AUG\",\"SEP\",\"OCT\",\"NOV\",\"DEC\"];\n                  var colors = [\"#FFFFFF\",\"#AAFFAA\",\"#55FF55\",\"#00FF00\",\"#55FF00\",\"#AAFF00\",\"#FFFF00\",\"#FFE100\",\"#FFC300\",\"#FFA500\",\"#FFC355\",\"#FFE1AA\"];\n                  var ctx = canvas.getContext(\"2d\");\n                  ctx.strokStyle = \"#000000\";\n                  ctx.font = \"10px serif\";\n                  for(var x = 0 ; x < 12; x++){\n                    var xOffset = x*20;\n                    ctx.fillStyle = colors[x];\n                    var yStart = 100 - data[x];\n                    ctx.fillRect(xOffset, yStart, 15, data[x]);\n                    //alert(yStart + \" , \" + data[x]);\n                    ctx.strokeRect(xOffset, yStart, 15, data[x]);\n                    ctx.fillStyle = \"#000000\";\n                    var y = (x % 2 === 0) ? 130 : 120;\n                    ctx.fillText(months[x],xOffset, y);\n                  }\n                  ctx.font = \"20px serif\";\n                  //ctx.fillText(\"MAX: \" + max.toString(), 50,50) ;\n            }\n \n  '>Usage</button>  \n            </div>"
             });
             this._spLayer = new FeatureLayer(featureCollection, {
                 id: 'servicePointLayer',
@@ -687,12 +688,41 @@ define(["require", "exports", "dojo/dom", "esri/layers/GraphicsLayer", "esri/geo
                     eventReference.remove();
                 }
             });
+            //Feature layer click ServicePointClick
             this._spLayer.on("click", function (evt) {
+                debugger;
                 var spID = evt.graphic.attributes["LINKID"];
                 window.gisiaActiveFeature = spID;
-                var chkTraceUpstream = dom.byId("chkTraceUpstream").checked;
-                var chkTraceDownstream = dom.byId("chkTraceDownstream").checked;
-                if (chkTraceUpstream === false && chkTraceDownstream === false) {
+                var spLayer = _this._spLayer;
+                var jsonForTemplate = _this.PopupTemplateJson();
+                var makeImageVisible = false;
+                var description = jsonForTemplate.description;
+                description = description.replace("**VISIBLE**", "collapse");
+                var pictureDB = window.gisiaPictureToFeatureDB;
+                if (pictureDB !== undefined && pictureDB !== null) {
+                    var associatedPicture = pictureDB[spID];
+                    if (associatedPicture !== undefined) {
+                        makeImageVisible = true;
+                        var imgTag = "<img width=\"160px\" height=\"120px\" style=\"visibility:visible\" src=\"" + associatedPicture + "\" >";
+                        var tagToReplace = "<div id=\"gisia-divDynamicImage\"></div>";
+                        var indexOfTagtoReplace = description.indexOf(tagToReplace);
+                        if (indexOfTagtoReplace > -1) {
+                            description = description.replace(tagToReplace, imgTag);
+                        }
+                    }
+                }
+                jsonForTemplate.description = description;
+                _this._spLayer.setInfoTemplate(new PopupTemplate(jsonForTemplate));
+                if (makeImageVisible) {
+                    _this._mapRef.infoWindow.resize(350, 500);
+                }
+                var chkTraceUpstream = dom.byId("chkTraceUpstream");
+                var chkTraceDownstream = dom.byId("chkTraceDownstream");
+                if (chkTraceUpstream === undefined || chkTraceUpstream === null) {
+                    return;
+                }
+                if (chkTraceUpstream.checked === false) {
+                    debugger;
                     return;
                 }
                 else {
@@ -1094,6 +1124,12 @@ define(["require", "exports", "dojo/dom", "esri/layers/GraphicsLayer", "esri/geo
                             "type": "esriSLS"
                         }
                     }]
+            };
+        };
+        MakeData.prototype.PopupTemplateJson = function () {
+            return {
+                title: "{FIRSTNAME} {LASTNAME}",
+                description: "\n            <div class=\"gisia-container\">\n                <div style=\"display:inline-block;float:left;margin-right:10px;\" class=\"gisia-left-element\">\n            \n                <div id=\"gisia-div-spInfo\">\n                <div>{ADDRESS}<br>{CITY}, {STATE}<br>{PHONE}<br>\n                <p id=\"gisiaTxtMaxUse\"></p>\n                <button id='btnShowData' class='gisia-btnUsage' style=\"  background-color: #008CBA; \n                border: none;\n                color: white;\n                padding: 5px 12px;\n                text-align: center;\n                text-decoration: none;\n                display: inline-block;\n                font-size: 12px;\n                margin: 4px 2px;\n                cursor: pointer;\n                border-radius:10px;\" onclick='\n                var usage = {USAGE};\n                var data = [];\n                for(var i = 0 ; i < 12 ; i++){\n                    data.push(usage.records[i][1].Value);\n                }\n                var canvas = document.getElementById(\"gisia-canBarChart\");\n                if (canvas.getContext) {\n                    var dl = data.length;\n                    var max = -999;\n                    for(var q = 0 ; q < dl; q++){\n                        var curValue = parseFloat(data[q]);\n                        if( curValue > max){\n                            max = curValue;\n                            //alert(\"max set to \" + max);\n                          }\n                      }\n                      document.getElementById(\"gisiaTxtMaxUse\").innerHTML = \"Max Use: \" + Math.round(max);\n                      //alert(\"max = \" + max)  ;\n                      //alert(\"data sub 0 \" + data[0]);\n                      var data2 =[];\n                      for(var i = 0 ; i < dl; i++){\n                        var val = parseFloat(data[i].toString());\n                        var lessThanOne = val/max;\n                        //alert(\"less than 1 \" + lessThanOne);\n                        data2.push(100 * lessThanOne );\n                      }\n                      \n                      data = data2;\n                      //alert(data[6] );\n                      var months = [\"JAN\",\"FEB\",\"MAR\",\"APR\",\"MAY\",\"JUN\",\"JUL\",\"AUG\",\"SEP\",\"OCT\",\"NOV\",\"DEC\"];\n                      var colors = [\"#FFFFFF\",\"#AAFFAA\",\"#55FF55\",\"#00FF00\",\"#55FF00\",\"#AAFF00\",\"#FFFF00\",\"#FFE100\",\"#FFC300\",\"#FFA500\",\"#FFC355\",\"#FFE1AA\"];\n                      var ctx = canvas.getContext(\"2d\");\n                      ctx.strokStyle = \"#000000\";\n                      ctx.font = \"10px serif\";\n                      for(var x = 0 ; x < 12; x++){\n                        var xOffset = x*20;\n                        ctx.fillStyle = colors[x];\n                        var yStart = 100 - data[x];\n                        ctx.fillRect(xOffset, yStart, 15, data[x]);\n                        //alert(yStart + \" , \" + data[x]);\n                        ctx.strokeRect(xOffset, yStart, 15, data[x]);\n                        ctx.fillStyle = \"#000000\";\n                        var y = (x % 2 === 0) ? 130 : 120;\n                        ctx.fillText(months[x],xOffset, y);\n                      }\n                      ctx.font = \"20px serif\";\n                      //ctx.fillText(\"MAX: \" + max.toString(), 50,50) ;\n                }\n     \n      '>Usage</button>\n      </div> \n                </div>\n          \n            </div>\n            <div style=\"display:inline-block;float:left\" class=\"gisia-right-element\">\n            <div id=\"gisia-divDynamicImage\"></div>\n        </div>  \n        <div>\n                <canvas style=\"margin-top:15px\" id=\"gisia-canBarChart\" width=\"240\" height=\"150\"></canvas>\n                </div>\n            </div>"
             };
         };
         return MakeData;

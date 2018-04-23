@@ -16,10 +16,15 @@ export class LabelsView{
 
           
     }
-    
+    onBackToMapClick() {
+
+        (window as any).displayMenu();
+        (window as any).$("#mapAnchor").trigger("click");
+    }    
     public onRandomLabelExpressionClick(){
         //
         var labelExpression = (document.getElementById("gisia-txtLabelExpression") as any).value = '[FIRSTNAME]` `[LASTNAME][CR][PHONE][CR]`MAX: `{AGGREGATE table="" relationshipId="-1" field="USAGE.records.Value" round="1" operation="max"}` Kwh`';
     }
-
+    // (window as any).displayMenu();
+    // (window as any).$("#mapAnchor").trigger("click"); 
 }
