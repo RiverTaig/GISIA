@@ -6,7 +6,7 @@ declare var require: any;
  
          _viewModel :LabelsViewModel = null;
         constructor() {
-            //debugger;
+
             console.log("GISIA LabelsViewModel constructor");
     
         }

@@ -13,7 +13,7 @@ import { subclass, declared } from "esri/core/accessorSupport/decorators";*/
          */
          _viewModel : DataViewModel = null;
         constructor() {
-            //debugger;
+
             console.log("GISIA DataViewModel constructor");
     
         }

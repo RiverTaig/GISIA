@@ -6,15 +6,26 @@
             electric usage data available in the "USAGE" field. Valid operations on the data are MAX,MIN,SUM,and AVG.
     </h4>
     <br>
-    <br>
+
     <input type="checkbox" checked id="gisia-chkLabelServicePoints" name="subscribe" value="newsletter">
     <label style="margin-left: 5px" for="subscribeNews">Label Electric Service Points</label>
     <br>
-    <br> Begin labeling at: 1 to
-    <input type="number" id="gisia-numLabelScale" min="2000" max="18000" value=5000>
-    <br>
-    <br> Expression:
 
+    <table class="gisia-table">
+        <tr>
+            <td>Begin labeling at: 1 to</td>
+            <td>
+                <input type="number" id="gisia-numLabelScale" min="2000" max="18000" value=5000>
+            </td>
+        </tr>
+    </table>
+    <input type="checkbox" id="gisia-chkEnableConflictDetection" name="conflictDetection" value="newsletter">
+    </td>
+
+    <label for="conflictDetection">Enable Conflict Detection</label>
+
+
+    <br> Expression:
 
     <br>
     <textarea style="background: beige" rows="5" cols="60" type="textarea" id="gisia-txtLabelExpression">[FIRSTNAME]` `[LASTNAME]</textarea>
@@ -22,8 +33,10 @@
     <br>
     <div id="button-wrap-inner" style="margin:1px" onclick="ViewEvent('LabelsView','onRandomLabelExpressionClick')">
 
-        <a class="btn" >Random Sample</a>
-    </div><br><br>
+        <a class="btn">Load <Expression class=""></Expression></a>
+    </div>
+    <br>
+    <br>
     <div id="button-wrap-inner" onclick="ViewEvent('LabelsView','onBackToMapClick')">
         <a class="btn">Map</a>
     </div>

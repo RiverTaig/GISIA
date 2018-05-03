@@ -44,7 +44,12 @@ export class DataView{
         makeData.MakeData();
         makeData.MakeSPGraphicsIntoFeatureLayer();
         makeData.MakeLinesIntoFeatureLayer();
-        (window as any).displayMenu();
+        let displayMenu = true;
+
+        if(displayMenu){
+
+            (window as any).displayMenu();
+        }
         (window as any).$("#mapAnchor").trigger("click");        
         return;
 

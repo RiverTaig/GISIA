@@ -6,7 +6,7 @@ declare var require: any;
  
          _viewModel :TracingViewModel = null;
         constructor() {
-            //debugger;
+            
             console.log("GISIA TracingViewModel constructor");
     
         }

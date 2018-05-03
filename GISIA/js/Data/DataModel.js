@@ -10,7 +10,6 @@ define(["require", "exports"], function (require, exports) {
              *
              */
             this._viewModel = null;
-            //debugger;
             console.log("GISIA DataViewModel constructor");
         }
         DataModel.prototype.initialize = function (viewModel) {

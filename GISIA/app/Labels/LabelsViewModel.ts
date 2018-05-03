@@ -11,7 +11,7 @@ export class LabelsViewModel {
     public _view : LabelsView;
     
     constructor( model : LabelsModel, view : LabelsView) {
-        //debugger;
+
         console.log("Labels  view model constructor!!");
         this._model = model;
         this._view = view;
@@ -23,9 +23,9 @@ export class LabelsViewModel {
 
     public initialize( ) {
         if( (window as any).DEBUG){
-            debugger;
+          
         }
-        //debugger;
+
         let optionStrings : string;
         
   

@@ -3,7 +3,6 @@ define(["require", "exports"], function (require, exports) {
     Object.defineProperty(exports, "__esModule", { value: true });
     var DataViewModel = /** @class */ (function () {
         function DataViewModel(model, view) {
-            //debugger;
             console.log("data  view model constructor!!");
             this._model = model;
             this._view = view;
@@ -12,7 +11,6 @@ define(["require", "exports"], function (require, exports) {
         }
         DataViewModel.prototype.GetTPK = function (url) {
             if (window.DEBUG) {
-                debugger;
             }
             require(["js/offlinetpk2"], function (otpk) {
                 var s = otpk.getTPK(url);
@@ -23,9 +21,7 @@ define(["require", "exports"], function (require, exports) {
         };
         DataViewModel.prototype.initialize = function () {
             if (window.DEBUG) {
-                debugger;
             }
-            //debugger;
             var optionStrings;
         };
         return DataViewModel;

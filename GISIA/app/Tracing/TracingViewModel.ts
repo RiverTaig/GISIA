@@ -11,7 +11,7 @@ export class TracingViewModel {
     public _view : TracingView;
     
     constructor( model : TracingModel, view : TracingView) {
-        //debugger;
+      
         console.log("tracing  view model constructor!!");
         this._model = model;
         this._view = view;
@@ -23,9 +23,9 @@ export class TracingViewModel {
 
     public initialize( ) {
         if( (window as any).DEBUG){
-            debugger;
+          
         }
-        //debugger;
+      
         let optionStrings : string;
         
   

@@ -26,7 +26,6 @@ define(["require", "exports"], function (require, exports) {
         };
         BasemapView.prototype.onAddToMapClick = function () {
             if (window.DEBUG) {
-                debugger;
             }
             console.log("on add to map click");
             var select = document.getElementById("baseMapViewSelect");

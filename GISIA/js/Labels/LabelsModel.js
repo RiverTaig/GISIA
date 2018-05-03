@@ -4,7 +4,6 @@ define(["require", "exports"], function (require, exports) {
     var LabelsModel = /** @class */ (function () {
         function LabelsModel() {
             this._viewModel = null;
-            //debugger;
             console.log("GISIA LabelsViewModel constructor");
         }
         LabelsModel.prototype.initialize = function (viewModel) {

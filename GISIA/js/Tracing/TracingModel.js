@@ -4,7 +4,6 @@ define(["require", "exports"], function (require, exports) {
     var TracingModel = /** @class */ (function () {
         function TracingModel() {
             this._viewModel = null;
-            //debugger;
             console.log("GISIA TracingViewModel constructor");
         }
         TracingModel.prototype.initialize = function (viewModel) {

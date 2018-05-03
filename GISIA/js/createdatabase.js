@@ -20,7 +20,7 @@ request.error = function (event) {
 
 request.onsuccess = function (event) {
     _gisiaDB = event.target.result;
-    document.querySelector("#saveBookmarkToDB").addEventListener("click", addBookmark);
+    //document.querySelector("#saveBookmarkToDB").addEventListener("click", addBookmark);
     
 };
 

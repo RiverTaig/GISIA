@@ -27,7 +27,7 @@ export class BasemapView{
     }
     public onAddToMapClick(){
         if( (window as any).DEBUG){
-            debugger;
+
         }
         console.log ("on add to map click");
         let select : HTMLSelectElement = <HTMLSelectElement> document.getElementById("baseMapViewSelect");

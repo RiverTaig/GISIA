@@ -30,8 +30,10 @@ import Polygon = require("esri/geometry/Polygon");
 //import * as Collections from 'typescript-collections';
 import { PolyLine } from 'dojox/gfx/shape';
 
-declare var require: any;
 
+
+declare var require: any;
+type ExtentMilliseconds = [Extent, number];
 export class MakeData {
     //tet
     private _privateVariable: string = null;
@@ -49,7 +51,7 @@ export class MakeData {
     private _gl8: GraphicsLayer;
     private randomFirstNames: string[] = [
         "Alan", "Barbara", "Chuck", "Dan", "Elise", "Frank", "Georgia", "Hank", "Ingrid", "Jack", "Kathy", "Larry", "Mary", "Ned", "Oprah",
-        "Paul", "Queen", "Ron", "Susan", "Thom", "Uma", "Vince", "Wanda", "Xavier", "Yoko", "Zufong"
+        "Paul", "Queen", "Ron", "Susan", "Thom", "Uma", "Vince", "Wanda", "Xavier", "Yoko", "Zed"
     ];
     private randomCity: string[] = ["Austin", "Baltimore", "Chicago", "Denver", "Eugene", "Fargo", "Gainsville", "Houston", "Ipswich", "Jacksonville",
         "Kipler", "Lawrence", "Mayberry", "Nantucket", "Ogden", "Philadelphia", "Quebec City", "Ramon", "Susanville", "Toledo", "Ulster", "Venice",
@@ -210,14 +212,66 @@ export class MakeData {
     }
 
     private _extentChangeCounter = 0;
+
     private _labelPresent = false;
+    _extentTimes: ExtentMilliseconds[] = [];
+
+    IsEraseGraphicRequest() : boolean {
+        let et = this._extentTimes;
+        if (et.length < 10) {
+            return false;
+        }
+        let first = et[0];
+        let second = et[1];
+        let last = et[et.length - 1];
+        if (last[1] - first[1] > 4000) {
+            return false;
+        }
+        let retVal = true;
+        let xmin0 = first[0].xmin;
+        let xminLast = second[0].xmin;
+        let increasing = false;
+        if (xminLast > xmin0) {
+            increasing = true;
+        }
+        for (let i = 2; i < et.length; i++) {
+            let xminAti = et[i][0].xmin;
+            //check for two increases in a row
+            if (increasing && xminAti > xminLast) {
+                retVal = false;
+                break;
+            }
+            //check for two decreases in a row
+            if (!increasing && xminAti < xminLast) {
+                retVal = false;
+                break;
+            }
+            xminLast = xminAti;
+            increasing = !increasing;
+        }
+        return retVal;
+    }
+
     listenForExtentChange() {
 
-
+        this._mapRef.on("dbl-click", (e) =>{
+            this._traceResults.clear();
+        });
         this._mapRef.on("extent-change", (e) => {
             if (this._labelPresent) {
                 this._mapRef.graphics.clear();
             }
+
+            // if (this._extentTimes.length > 9) {
+            //     this._extentTimes.shift();
+            // }
+            // let d = new Date();
+            // let n = <number>d.getTime();
+            // this._extentTimes.push([this._mapRef.extent, n]);
+            // if (this.IsEraseGraphicRequest()) {
+            //     this._traceResults.clear();
+            // }
+
             let scale = this._mapRef.getScale();
             this._extentChangeCounter++;
             console.log("Scale " + scale + "  counter: " + this._extentChangeCounter);
@@ -297,6 +351,7 @@ export class MakeData {
         query.geometry = this._mapRef.extent;
         //query.spatialRelationship = "SPATIAL_REL_INTERSECTS";
         query.returnGeometry = true;
+        //
 
         if (this._spLayer) {
             if (this._spLayer.isVisibleAtScale(this._mapRef.getScale())) {
@@ -497,7 +552,7 @@ export class MakeData {
     }
 
     PrecisionRound(num: number, precision: number): number {
-        var factor = Math.pow(10, precision);
+        let factor: number = Math.pow(10, precision);
         let answer: number = Math.round(num * factor) / factor;
         return answer;
     }
@@ -506,17 +561,22 @@ export class MakeData {
 
         const DISTANCE_AT_LEVEL_15 = 75;
         const MAXLABELS = 700; //todo read from user
-        let checkForOverlap = true;
+        let checkForOverlapCheckBox = (<HTMLInputElement>dom.byId("gisia-chkEnableConflictDetection"));
+        let checkForOverlap = false;
+        if (checkForOverlapCheckBox.checked) {
+            checkForOverlap = true;
+        }
         let fontSize = 16;
+        let font = new Font(fontSize.toString() + "px", Font.STYLE_NORMAL, Font.VARIANT_NORMAL, Font.WEIGHT_BOLDER);
         let stopLabelingAtThisExtent = false;
         let level = this._mapRef.getLevel();
         let deltaFromBaseLevel = 15 - level;
         let multiplier = Math.pow(2, deltaFromBaseLevel);
         let amountToAdd = multiplier * DISTANCE_AT_LEVEL_15;
         let spatRef = this._mapRef.spatialReference;
-        let font = new Font(fontSize.toString() + "px", Font.STYLE_NORMAL, Font.VARIANT_NORMAL, Font.WEIGHT_BOLDER);
+
         font.family = "Arial";
-        let offset =  this._mapRef.extent.getWidth() / 60;
+        let offset = this._mapRef.extent.getWidth() / 300;
         let labelsPlaced = 0;
         let labelExtents: Extent[] = [];
 
@@ -531,7 +591,7 @@ export class MakeData {
             let startPoint = <Point>graphic.geometry;
             let x = (graphic.geometry as Point).x;
             let y = (graphic.geometry as Point).y;
-
+            console.log(`${x},${y}`);
             //TODO - Build this out to be flexible
 
             let textLines = this.GetLabelLines(labelExpressionAsArray, graphic);
@@ -547,8 +607,8 @@ export class MakeData {
             for (let lineIndex = 0; lineIndex < textLines.length; lineIndex++) {
                 let textForLine = textLines[lineIndex];
                 let ts = new TextSymbol(textForLine, font, new Color([0, 0, 0]));
-                ts.xoffset = offset;
-                ts.yoffset = offset;
+                //ts.xoffset = offset;
+                //ts.yoffset = offset;
                 ts.haloColor = new Color([255, 255, 255]);
                 ts.haloSize = 2;
                 ts.setHorizontalAlignment("left");
@@ -556,18 +616,22 @@ export class MakeData {
                 let newY = (y - (lineIndex * amountToAdd)) + offset;
                 let textPoint = new Point(newX, newY);
                 textPoint.spatialReference = spatRef;
+                let lt: labelTuple = [textPoint, ts];
                 if (checkForOverlap) {
                     let lineLength = multiplier * 3.0 * textForLine.length * fontSize;
-                    let thisExtent = new Extent(newX, newY, (newX + lineLength), (newY + (fontSize )), spatRef);
+                    let thisExtent = new Extent(newX, newY, (newX + lineLength), (newY + (fontSize)), spatRef);
                     if (this.hasOverlaps(labelExtents, thisExtent, currentLabelExtentsIndex) === false) {
                         labelExtents.push(thisExtent);
-                        let lt: labelTuple = [textPoint, ts];
+                        //let lt: labelTuple = [textPoint, ts];
                         labelTuples.push(lt);
                     }
                     else {
                         labelThisFeature = false;
                         break;
                     }
+                }
+                else {
+                    labelTuples.push(lt);
                 }
 
             }
@@ -656,7 +720,7 @@ export class MakeData {
 
 
         this._electricLineLayer.on("click", (evt) => {
-            debugger;
+
             let g: Graphic = evt.graphic;
 
 
@@ -885,7 +949,7 @@ export class MakeData {
 
         //Feature layer click ServicePointClick
         this._spLayer.on("click", (evt) => {
-            debugger;
+
             let spID = evt.graphic.attributes["LINKID"];
             (window as any).gisiaActiveFeature = spID;
             let spLayer = this._spLayer;
@@ -921,8 +985,8 @@ export class MakeData {
             if (chkTraceUpstream === undefined || chkTraceUpstream === null) {
                 return;
             }
-            if (chkTraceUpstream.checked === false ) {
-                debugger;
+            if (chkTraceUpstream.checked === false) {
+
                 return;
             }
             else {
@@ -1008,13 +1072,26 @@ export class MakeData {
         return retlyr;
     }
 
-    LabelInExtent2() {
-
-    }
-    //-116.476036,33.844951
+    _lastClickPoint: Point = null;
     setupMapClickHandler() {
-
-
+        this._mapRef.on("mouse-move", (evt) => {
+            console.log("move: " + evt.mapPoint.x + "," + evt.mapPoint.y);
+        });
+        //map click handler asdf
+        this._mapRef.on("click", (evt) => {
+            return;
+            if (this._lastClickPoint === null) {
+                this._lastClickPoint = evt.mapPoint;
+                return;
+            }
+            else {
+                let dx = evt.mapPoint.x - this._lastClickPoint.x;
+                let dy = evt.mapPoint.y - this._lastClickPoint.y;
+                let d = Math.sqrt((dx * dx) + (dy * dy));
+                console.log("distance between last two points is " + d.toString());
+                this._lastClickPoint = evt.mapPoint;
+            }
+        });
 
     }
 

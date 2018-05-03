@@ -12,7 +12,6 @@ define(["require", "exports"], function (require, exports) {
              * please let this work in basmap model
              */
             this._viewModel = null;
-            //debugger;
             window._lastError = "Basemap model constructor";
             console.log("basemapmodel constructor");
         }

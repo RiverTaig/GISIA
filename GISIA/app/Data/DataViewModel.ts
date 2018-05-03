@@ -11,7 +11,7 @@ export class DataViewModel {
     public _view : DataView;
     
     constructor( model : DataModel, view : DataView) {
-        //debugger;
+
         console.log("data  view model constructor!!");
         this._model = model;
         this._view = view;
@@ -22,7 +22,7 @@ export class DataViewModel {
 
     public GetTPK(url : string){
         if( (window as any).DEBUG){
-            debugger;
+
         }
         require(["js/offlinetpk2" ], function(otpk : any  ){
             let s = otpk.getTPK(url);
@@ -34,9 +34,9 @@ export class DataViewModel {
 
     public initialize( ) {
         if( (window as any).DEBUG){
-            debugger;
+
         }
-        //debugger;
+
         let optionStrings : string;
         
   

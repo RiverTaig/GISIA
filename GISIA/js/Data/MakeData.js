@@ -11,7 +11,7 @@ define(["require", "exports", "dojo/dom", "esri/layers/GraphicsLayer", "esri/geo
             this._dictDownstream = null; //this will be like Collections.Dictionary<number, [number]> = null;  **if** I can get dictionary working!!
             this.randomFirstNames = [
                 "Alan", "Barbara", "Chuck", "Dan", "Elise", "Frank", "Georgia", "Hank", "Ingrid", "Jack", "Kathy", "Larry", "Mary", "Ned", "Oprah",
-                "Paul", "Queen", "Ron", "Susan", "Thom", "Uma", "Vince", "Wanda", "Xavier", "Yoko", "Zufong"
+                "Paul", "Queen", "Ron", "Susan", "Thom", "Uma", "Vince", "Wanda", "Xavier", "Yoko", "Zed"
             ];
             this.randomCity = ["Austin", "Baltimore", "Chicago", "Denver", "Eugene", "Fargo", "Gainsville", "Houston", "Ipswich", "Jacksonville",
                 "Kipler", "Lawrence", "Mayberry", "Nantucket", "Ogden", "Philadelphia", "Quebec City", "Ramon", "Susanville", "Toledo", "Ulster", "Venice",
@@ -30,12 +30,14 @@ define(["require", "exports", "dojo/dom", "esri/layers/GraphicsLayer", "esri/geo
             this._servicePointRenderer = {};
             this._extentChangeCounter = 0;
             this._labelPresent = false;
+            this._extentTimes = [];
             //Simple Expression
             this.labelExpression0 = "\n    {FIRSTNAME} {LASTNAME}{NEWLINE}\n    {ADDRESS}\n    ";
             //Name / addreess / Total electric usage (aggregation)
             this.labelExpression1 = "\n    Name: {FIRSTNAME} {LASTNAME}{NEWLINE}\n    {ADDRESS},{CITY},{STATE}{NEWLINE}\n    <RELATION layerID=\"0\" primaryKey=\"USAGE\" foreignKey=\"\" where=\"\" outputRecords=\"relatedElectricUsageRecords\", fields=\"Month,Value\" >\n        <FOREACH delimter=\",\">\n            {Value}\n        </FOREACH>\n    </RELATION>\n    TOTAL: \n    <SUM inputRecords=\"relatedElectricUsageRecords\" field=\"Value\" round=\"2\" where=\"\">\n        {SUM} KWH\n    </SUM>\n    ";
             //Highest usage during summer (filtering)
             this.labelExpression2 = "\n    {ADDRESS}{NEWLINE}\n    <RELATION layerID=\"0\" primaryKey=\"USAGE\" foreignKey=\"\" \n        where=\"Month in ('Jun','July','Aug')\" outputRecords=\"relatedElectricUsageRecords\", fields=\"Month,Value\" >\n    </RELATION>\n    {NEWLINE}\n    TOTAL: <MAX inputRecords=\"relatedElectricUsageRecords\" field=\"Value\" round=\"2\">\n        {Month} : {Value} KWH\n    </MAX> \n    ";
+            this._lastClickPoint = null;
             console.log("constructor");
             this._mapRef = mapRef;
             //These two graphic layer get converted to feature layers
@@ -166,12 +168,59 @@ define(["require", "exports", "dojo/dom", "esri/layers/GraphicsLayer", "esri/geo
             this.setupMapClickHandler();
             this.listenForExtentChange();
         }
+        MakeData.prototype.IsEraseGraphicRequest = function () {
+            var et = this._extentTimes;
+            if (et.length < 10) {
+                return false;
+            }
+            var first = et[0];
+            var second = et[1];
+            var last = et[et.length - 1];
+            if (last[1] - first[1] > 4000) {
+                return false;
+            }
+            var retVal = true;
+            var xmin0 = first[0].xmin;
+            var xminLast = second[0].xmin;
+            var increasing = false;
+            if (xminLast > xmin0) {
+                increasing = true;
+            }
+            for (var i = 2; i < et.length; i++) {
+                var xminAti = et[i][0].xmin;
+                //check for two increases in a row
+                if (increasing && xminAti > xminLast) {
+                    retVal = false;
+                    break;
+                }
+                //check for two decreases in a row
+                if (!increasing && xminAti < xminLast) {
+                    retVal = false;
+                    break;
+                }
+                xminLast = xminAti;
+                increasing = !increasing;
+            }
+            return retVal;
+        };
         MakeData.prototype.listenForExtentChange = function () {
             var _this = this;
+            this._mapRef.on("dbl-click", function (e) {
+                _this._traceResults.clear();
+            });
             this._mapRef.on("extent-change", function (e) {
                 if (_this._labelPresent) {
                     _this._mapRef.graphics.clear();
                 }
+                // if (this._extentTimes.length > 9) {
+                //     this._extentTimes.shift();
+                // }
+                // let d = new Date();
+                // let n = <number>d.getTime();
+                // this._extentTimes.push([this._mapRef.extent, n]);
+                // if (this.IsEraseGraphicRequest()) {
+                //     this._traceResults.clear();
+                // }
                 var scale = _this._mapRef.getScale();
                 _this._extentChangeCounter++;
                 console.log("Scale " + scale + "  counter: " + _this._extentChangeCounter);
@@ -215,6 +264,7 @@ define(["require", "exports", "dojo/dom", "esri/layers/GraphicsLayer", "esri/geo
             query.geometry = this._mapRef.extent;
             //query.spatialRelationship = "SPATIAL_REL_INTERSECTS";
             query.returnGeometry = true;
+            //
             if (this._spLayer) {
                 if (this._spLayer.isVisibleAtScale(this._mapRef.getScale())) {
                     this._spLayer.selectFeatures(query, FeatureLayer.SELECTION_NEW, function (featureSet) {
@@ -397,17 +447,21 @@ define(["require", "exports", "dojo/dom", "esri/layers/GraphicsLayer", "esri/geo
             var _this = this;
             var DISTANCE_AT_LEVEL_15 = 75;
             var MAXLABELS = 700; //todo read from user
-            var checkForOverlap = true;
+            var checkForOverlapCheckBox = dom.byId("gisia-chkEnableConflictDetection");
+            var checkForOverlap = false;
+            if (checkForOverlapCheckBox.checked) {
+                checkForOverlap = true;
+            }
             var fontSize = 16;
+            var font = new Font(fontSize.toString() + "px", Font.STYLE_NORMAL, Font.VARIANT_NORMAL, Font.WEIGHT_BOLDER);
             var stopLabelingAtThisExtent = false;
             var level = this._mapRef.getLevel();
             var deltaFromBaseLevel = 15 - level;
             var multiplier = Math.pow(2, deltaFromBaseLevel);
             var amountToAdd = multiplier * DISTANCE_AT_LEVEL_15;
             var spatRef = this._mapRef.spatialReference;
-            var font = new Font(fontSize.toString() + "px", Font.STYLE_NORMAL, Font.VARIANT_NORMAL, Font.WEIGHT_BOLDER);
             font.family = "Arial";
-            var offset = this._mapRef.extent.getWidth() / 60;
+            var offset = this._mapRef.extent.getWidth() / 300;
             var labelsPlaced = 0;
             var labelExtents = [];
             var labelExpressionAsArray = this.GetLabelExpressionAsArray();
@@ -421,6 +475,7 @@ define(["require", "exports", "dojo/dom", "esri/layers/GraphicsLayer", "esri/geo
                 var startPoint = graphic.geometry;
                 var x = graphic.geometry.x;
                 var y = graphic.geometry.y;
+                console.log(x + "," + y);
                 //TODO - Build this out to be flexible
                 var textLines = this.GetLabelLines(labelExpressionAsArray, graphic);
                 // let textForLine1 = `${graphic.attributes["FIRSTNAME"]} ${graphic.attributes["LASTNAME"]} `;
@@ -432,8 +487,8 @@ define(["require", "exports", "dojo/dom", "esri/layers/GraphicsLayer", "esri/geo
                 for (var lineIndex = 0; lineIndex < textLines.length; lineIndex++) {
                     var textForLine = textLines[lineIndex];
                     var ts = new TextSymbol(textForLine, font, new Color([0, 0, 0]));
-                    ts.xoffset = offset;
-                    ts.yoffset = offset;
+                    //ts.xoffset = offset;
+                    //ts.yoffset = offset;
                     ts.haloColor = new Color([255, 255, 255]);
                     ts.haloSize = 2;
                     ts.setHorizontalAlignment("left");
@@ -441,18 +496,22 @@ define(["require", "exports", "dojo/dom", "esri/layers/GraphicsLayer", "esri/geo
                     var newY = (y - (lineIndex * amountToAdd)) + offset;
                     var textPoint = new Point(newX, newY);
                     textPoint.spatialReference = spatRef;
+                    var lt = [textPoint, ts];
                     if (checkForOverlap) {
                         var lineLength = multiplier * 3.0 * textForLine.length * fontSize;
                         var thisExtent = new Extent(newX, newY, (newX + lineLength), (newY + (fontSize)), spatRef);
                         if (this.hasOverlaps(labelExtents, thisExtent, currentLabelExtentsIndex) === false) {
                             labelExtents.push(thisExtent);
-                            var lt = [textPoint, ts];
+                            //let lt: labelTuple = [textPoint, ts];
                             labelTuples.push(lt);
                         }
                         else {
                             labelThisFeature = false;
                             break;
                         }
+                    }
+                    else {
+                        labelTuples.push(lt);
                     }
                 }
                 if (labelThisFeature) {
@@ -528,7 +587,6 @@ define(["require", "exports", "dojo/dom", "esri/layers/GraphicsLayer", "esri/geo
                 }
             });
             this._electricLineLayer.on("click", function (evt) {
-                debugger;
                 var g = evt.graphic;
                 var chkTraceUpstream = dom.byId("chkTraceUpstream").checked;
                 var chkTraceDownstream = dom.byId("chkTraceDownstream").checked;
@@ -690,7 +748,6 @@ define(["require", "exports", "dojo/dom", "esri/layers/GraphicsLayer", "esri/geo
             });
             //Feature layer click ServicePointClick
             this._spLayer.on("click", function (evt) {
-                debugger;
                 var spID = evt.graphic.attributes["LINKID"];
                 window.gisiaActiveFeature = spID;
                 var spLayer = _this._spLayer;
@@ -722,7 +779,6 @@ define(["require", "exports", "dojo/dom", "esri/layers/GraphicsLayer", "esri/geo
                     return;
                 }
                 if (chkTraceUpstream.checked === false) {
-                    debugger;
                     return;
                 }
                 else {
@@ -792,10 +848,26 @@ define(["require", "exports", "dojo/dom", "esri/layers/GraphicsLayer", "esri/geo
             });
             return retlyr;
         };
-        MakeData.prototype.LabelInExtent2 = function () {
-        };
-        //-116.476036,33.844951
         MakeData.prototype.setupMapClickHandler = function () {
+            var _this = this;
+            this._mapRef.on("mouse-move", function (evt) {
+                console.log("move: " + evt.mapPoint.x + "," + evt.mapPoint.y);
+            });
+            //map click handler asdf
+            this._mapRef.on("click", function (evt) {
+                return;
+                if (_this._lastClickPoint === null) {
+                    _this._lastClickPoint = evt.mapPoint;
+                    return;
+                }
+                else {
+                    var dx = evt.mapPoint.x - _this._lastClickPoint.x;
+                    var dy = evt.mapPoint.y - _this._lastClickPoint.y;
+                    var d = Math.sqrt((dx * dx) + (dy * dy));
+                    console.log("distance between last two points is " + d.toString());
+                    _this._lastClickPoint = evt.mapPoint;
+                }
+            });
         };
         MakeData.prototype.MakeData = function () {
             try {

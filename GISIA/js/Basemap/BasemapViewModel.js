@@ -3,7 +3,6 @@ define(["require", "exports"], function (require, exports) {
     Object.defineProperty(exports, "__esModule", { value: true });
     var BasemapViewModel = /** @class */ (function () {
         function BasemapViewModel(model, view) {
-            //debugger;
             console.log("base map  view model constructor!!");
             this._model = model;
             this._view = view;
@@ -12,7 +11,6 @@ define(["require", "exports"], function (require, exports) {
         }
         BasemapViewModel.prototype.GetTPK = function (url) {
             if (window.DEBUG) {
-                debugger;
             }
             require(["js/offlinetpk2"], function (otpk) {
                 var s = otpk.getTPK(url);
@@ -23,9 +21,7 @@ define(["require", "exports"], function (require, exports) {
         };
         BasemapViewModel.prototype.initialize = function () {
             if (window.DEBUG) {
-                debugger;
             }
-            //debugger;
             var optionStrings;
         };
         return BasemapViewModel;

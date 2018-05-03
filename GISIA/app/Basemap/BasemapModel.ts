@@ -14,7 +14,7 @@ import { subclass, declared } from "esri/core/accessorSupport/decorators";*/
          */
          _viewModel : BasemapViewModel = null;
         constructor() {
-            //debugger;
+
             (window as any)._lastError = "Basemap model constructor";
             console.log("basemapmodel constructor");
         }

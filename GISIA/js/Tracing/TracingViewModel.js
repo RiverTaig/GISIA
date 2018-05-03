@@ -3,7 +3,6 @@ define(["require", "exports"], function (require, exports) {
     Object.defineProperty(exports, "__esModule", { value: true });
     var TracingViewModel = /** @class */ (function () {
         function TracingViewModel(model, view) {
-            //debugger;
             console.log("tracing  view model constructor!!");
             this._model = model;
             this._view = view;
@@ -12,9 +11,7 @@ define(["require", "exports"], function (require, exports) {
         }
         TracingViewModel.prototype.initialize = function () {
             if (window.DEBUG) {
-                debugger;
             }
-            //debugger;
             var optionStrings;
         };
         return TracingViewModel;

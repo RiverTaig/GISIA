@@ -1,9 +1,8 @@
 
-
+var _whatsBeenLoadedAlready = {}
 
 var _lastError = "Last Error goes here";
 function ViewEvent(view, event) {
-    debugger;
     __MVVM_Views[view][event]();
 
 }
@@ -145,7 +144,6 @@ function btnDisplayImage_Click(onlySetLastSavedPictureURL) {
         console.log("btnDisplayImage_Click 2");
         var transaction = db.transaction(["pictures"], "readonly");
         var objectStore = transaction.objectStore("pictures");
-        debugger;
         var getFirstImageKeyRequest = objectStore.getAllKeys();
         getFirstImageKeyRequest.onsuccess = function (res) {
             var totalFiles = res.target.result.length;
@@ -163,14 +161,12 @@ function btnDisplayImage_Click(onlySetLastSavedPictureURL) {
                 var imgFile = objectStoreRequest.result;
                 var imgURL = window.URL.createObjectURL(imgFile);
                 var imgPicture = document.getElementById("thumb");
-                debugger;
                 if(! onlySetLastSavedPictureURL){
                     imgPicture.setAttribute("src", imgURL);
                     
                     document.getElementById('thumb').style.visibility="visible";
                 }
                 else{
-                    debugger;
                     if(window.gisiaPictureToFeatureDB === undefined){
                         window.gisiaPictureToFeatureDB = {};
                     }                    
@@ -230,7 +226,6 @@ var __MVVM_Views = {};// ["viewName" : view instance with DOM events which has a
 $(document).ready(function () {
     var navigateTo = function (whereTo) {
         //alert("Navigating to: " + whereTo);
-        //debugger;
         $("#" + whereTo).load("html/" + whereTo + ".html", function (response, status, xhr) {
 
 
@@ -280,7 +275,6 @@ $(document).ready(function () {
                         modelInstance = new m.LabelsModel();
                         viewInstance = new dv.LabelsView();
                         viewModelInstance = new dvm.LabelsViewModel(modelInstance, viewInstance, $);
-                        debugger;
                         __MVVM_Views.LabelsView = viewInstance;
                     });
                     break;
@@ -294,7 +288,7 @@ $(document).ready(function () {
     }
     navigateTo("Map");
 
-
+    
 
     $("#myTopnav a").click(function () {
         var contentClass = "";
@@ -310,7 +304,15 @@ $(document).ready(function () {
                     return;
                 }
                 else {
-                    navigateTo(userSelection);
+                    let  callNav = true;
+                    if (window._whatsBeenLoadedAlready[contentClass])
+                    {
+                        callNav = false;
+                    }
+                    if(callNav){
+                        window._whatsBeenLoadedAlready[contentClass] = true;
+                        navigateTo(userSelection);
+                    }
 
                 }
             }

@@ -12,7 +12,7 @@ export class BasemapViewModel {
     public _view : BasemapView;
     
     constructor( model : BasemapModel, view : BasemapView) {
-        //debugger;
+
         console.log("base map  view model constructor!!");
         this._model = model;
         this._view = view;
@@ -23,7 +23,7 @@ export class BasemapViewModel {
 
     public GetTPK(url : string){
         if( (window as any).DEBUG){
-            debugger;
+
         }
         require(["js/offlinetpk2" ], function(otpk : any  ){
             let s = otpk.getTPK(url);
@@ -35,9 +35,9 @@ export class BasemapViewModel {
 
     public initialize( ) {
         if( (window as any).DEBUG){
-            debugger;
+
         }
-        //debugger;
+
         let optionStrings : string;
         
   

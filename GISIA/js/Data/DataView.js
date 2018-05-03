@@ -33,7 +33,10 @@ define(["require", "exports", "./MakeData"], function (require, exports, MakeDat
             makeData.MakeData();
             makeData.MakeSPGraphicsIntoFeatureLayer();
             makeData.MakeLinesIntoFeatureLayer();
-            window.displayMenu();
+            var displayMenu = true;
+            if (displayMenu) {
+                window.displayMenu();
+            }
             window.$("#mapAnchor").trigger("click");
             return;
         };
