@@ -185,11 +185,14 @@ function btnDisplayImage_Click(onlySetLastSavedPictureURL) {
 function btnSnapPhoto_Click() {
 
     var canvas = document.getElementById('canvas');
-    canvas.style.visibility="visible";
-    var context = canvas.getContext('2d');
     var video = document.getElementById('video');
 
-    context.drawImage(video, 0, 0, 642, 482);
+    canvas.height = video.clientHeight;
+    canvas.width = video.clientWidth;
+    canvas.style.visibility="visible";
+    var context = canvas.getContext('2d');
+
+    context.drawImage(video, 0, 0, video.clientWidth,video.clientHeight);
    video.style.visibility="hidden";
     
 }

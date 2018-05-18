@@ -17,11 +17,12 @@
 
     <br>
 
-    <div id="divPictureArea">
-        <video id="video" width="642" height="482" style="border:1px solid #000000;" autoplay></video>
-        <canvas id="canvas" style="position:absolute;left:10px" width="642" height="482" style="border:1px solid #000000;"></canvas>
-       
-        <img id="thumb" style="visibility:hidden;position: absolute;top:300px;left:150px;width:321px;height:241px;border:6px solid green;">
+    <div id="divPictureArea" style="position:relative;border:2px solid orange;    min-height: 300px;margin-bottom: 10px;">
+        <video id="video"  style="position:absolute;top:0px;left:0px;width:100%;height:auto;" autoplay></video>
+        <!-- <canvas id="canvas" style="position:absolute;left:10px" width="642" height="482" style="border:1px solid #000000;"></canvas> -->
+        <canvas id="canvas" style="visibility:hidden;position:absolute;top:0px;left:0px;"   ></canvas>
+        <!-- <img id="thumb" style="visibility:hidden;position: absolute;top:300px;left:150px;width:321px;height:241px;border:6px solid green;"> -->
+        <img id="thumb" style="visibility:hidden;position:absolute;top:10px;left:10px;border:6px solid green;height:100px;width:100px">
     </div>
     <div id="button-wrap-inner" style="display: inline;" onclick="btnDisplayImage_Click()">
         <a class="btn">View from DB</a>
@@ -29,5 +30,4 @@
     <div id="button-wrap-inner" style="display: inline;" onclick="btnAssociateToFeature_Click()">
         <a class="btn">Link to Feature</a>
     </div>
-
 </div>
